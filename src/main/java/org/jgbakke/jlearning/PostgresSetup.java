@@ -13,12 +13,14 @@ public class PostgresSetup {
 
     // Set up the DB if it does not exist yet
     public static void initDB(){
-        try (Connection conn = PostgresDriver.establishConnection()){
-            Statement stmt = conn.createStatement();
-            stmt.execute("CREATE TABLE IF NOT EXISTS qtable (states integer[], action_scores integer[]);");
-            stmt.close();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        try(PostgresDriver postgresDriver = new PostgresDriver()) {
+            try (Connection conn = postgresDriver.establishConnection()) {
+                Statement stmt = conn.createStatement();
+                stmt.execute("CREATE TABLE IF NOT EXISTS qtable (states integer[], action_scores integer[]);");
+                stmt.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
         }
     }
 }

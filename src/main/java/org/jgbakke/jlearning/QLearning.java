@@ -1,14 +1,23 @@
 package org.jgbakke.jlearning;
 
 
+import java.sql.SQLException;
+import java.util.HashMap;
+
 public class QLearning {
+
+    private HashMap<State, ActionScore[]> qTable;
 
     private double learningRate = 1;
     private double discountFactor = 0.9;
     private double randomChoiceChance = 0.1;
 
     public static void main(String[] args){
-        System.out.println("Main method called");
+         QLearning ql = new QLearning();
+    }
+
+    public QLearning(){
+        loadQTable();
     }
 
     public static class QLearningBuilder {
@@ -30,6 +39,15 @@ public class QLearning {
             return qLearning;
         }
 
+    }
+
+    private void loadQTable(){
+        try(PostgresDriver pd = new PostgresDriver()){
+            qTable = pd.loadQTable();
+            System.out.println("qTable loaded");
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
 }
