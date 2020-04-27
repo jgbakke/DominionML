@@ -1,0 +1,2 @@
+2020-04-27 04:12:28 [main] org.jgbakke.jlearning.QLearning.main()
+ERROR: Testing log error

@@ -1,6 +1,8 @@
 package org.jgbakke.jlearning;
 
 
+import org.tinylog.Logger;
+
 import java.sql.SQLException;
 import java.util.HashMap;
 
@@ -14,6 +16,7 @@ public class QLearning {
 
     public static void main(String[] args){
          //QLearning ql = new QLearning();
+        Logger.error("Testing log error");
     }
 
     public QLearning(){
