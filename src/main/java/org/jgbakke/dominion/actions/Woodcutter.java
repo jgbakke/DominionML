@@ -7,4 +7,9 @@ public class Woodcutter implements Action {
     public int id() {
         return 1;
     }
+
+    @Override
+    public int actions() {
+        return 0;
+    }
 }

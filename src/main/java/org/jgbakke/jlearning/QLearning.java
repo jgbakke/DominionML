@@ -13,7 +13,8 @@ public class QLearning {
     private double randomChoiceChance = 0.1;
 
     public static void main(String[] args){
-         QLearning ql = new QLearning();
+         //QLearning ql = new QLearning();
+        ActionContainer ac = ActionContainer.getInstance();
     }
 
     public QLearning(){

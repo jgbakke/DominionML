@@ -7,4 +7,9 @@ public class ThroneRoom implements Action {
     public int id() {
         return 0;
     }
+
+    @Override
+    public int actions() {
+        return 0;
+    }
 }
