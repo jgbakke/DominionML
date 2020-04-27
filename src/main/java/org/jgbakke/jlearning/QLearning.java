@@ -14,7 +14,6 @@ public class QLearning {
 
     public static void main(String[] args){
          //QLearning ql = new QLearning();
-        ActionContainer ac = ActionContainer.getInstance();
     }
 
     public QLearning(){
