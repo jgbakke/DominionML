@@ -16,6 +16,7 @@ public class Game {
 
     public static void main(String[] args){
         Game g = new Game(-2, 1, 5);
+        g.startGame();
     }
 
     public Game(int id, int players, int maxRounds){
@@ -24,7 +25,16 @@ public class Game {
         this.maxRounds = maxRounds;
     }
 
-    private void takeTurn(){
+    public void startGame(){
+        for (Player player : players) {
+            player.setStartingDeck();
+            player.drawHand();
+        }
+
+        takeTurns();
+    }
+
+    private void takeTurns(){
         for(int round = 0; round < maxRounds; round++){
             for (Player player : players) {
                 takePlayerTurn(player);
@@ -33,6 +43,7 @@ public class Game {
     }
 
     private void takePlayerTurn(Player p){
+        System.out.println("Starting turn...");
         ModifierWrapper currentResources = new ModifierWrapper(1,0,1,0);
 
         while(currentResources.actions > 0){
@@ -48,8 +59,10 @@ public class Game {
         List<DominionCard> chosenCards = p.buyPhase(currentResources.coins);
         chosenCards.forEach(p::gainNewCard);
 
+        System.out.println("Ending turn...");
         p.discardHand();
         p.drawHand();
+        System.out.println("Hand drawn");
     }
 
     private Player[] createPlayers(int num){
@@ -59,10 +72,6 @@ public class Game {
             players[0] = new QLearningPlayer();
         } else {
             throw new NotImplementedException();
-        }
-
-        for (Player player : players) {
-            player.setStartingDeck();
         }
 
         return players;
