@@ -14,8 +14,6 @@ public class QLearning {
 
     public static void main(String[] args){
         Logger.log("Hello World!");
-        // TODO: Deal with logging
-        // Logger.log(-1, "Starting QLearning");
     }
 
     public QLearning(){
