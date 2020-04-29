@@ -1,8 +1,6 @@
 package org.jgbakke.jlearning;
 
 
-import org.tinylog.Logger;
-
 import java.sql.SQLException;
 import java.util.HashMap;
 
@@ -15,8 +13,9 @@ public class QLearning {
     private double randomChoiceChance = 0.1;
 
     public static void main(String[] args){
-         //QLearning ql = new QLearning();
-        Logger.error("Testing log error");
+        Logger.log("Hello World!");
+        // TODO: Deal with logging
+        // Logger.log(-1, "Starting QLearning");
     }
 
     public QLearning(){
