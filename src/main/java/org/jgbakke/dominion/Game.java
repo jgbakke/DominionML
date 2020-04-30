@@ -49,11 +49,12 @@ public class Game {
         while(currentResources.actions > 0){
             DominionCard chosenCard = p.chooseAction(currentResources.actions);
 
-            // TODO: Implement getting bonus resources
             if(chosenCard == null){
-                // They did not play one so let's move on
                 break;
             }
+
+            chosenCard.executeAction();
+            currentResources.actions--;
         }
 
         List<DominionCard> chosenCards = p.buyPhase(currentResources.coins);

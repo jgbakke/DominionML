@@ -2,6 +2,7 @@ package org.jgbakke.dominion.actions;
 
 import org.jgbakke.dominion.ModifierWrapper;
 import org.jgbakke.jlearning.Action;
+import org.jgbakke.jlearning.Logger;
 
 public class Woodcutter implements DominionCard {
 
@@ -14,7 +15,7 @@ public class Woodcutter implements DominionCard {
 
     @Override
     public void executeAction() {
-
+        Logger.log("Woodcutter executed!");
     }
 
     @Override

@@ -7,6 +7,17 @@ import java.sql.Statement;
 
 public class Logger {
 
+    private static final String RESET_COLOR ="\033[0m";
+    private static final String RED_COLOR ="\033[0;31m";
+
+    private static void printRed(String m){
+        System.out.println(Logger.RED_COLOR + m + Logger.RESET_COLOR);
+    }
+
+    public static void log(String message, LoggingSeverity severity){
+        log(-1, message, severity);
+    }
+
     public static void log(String message){
         log(-1, message);
     }
@@ -16,7 +27,11 @@ public class Logger {
     }
 
     public static void log(int gameID, String message, LoggingSeverity severity){
-        System.out.println(message);
+        if(severity == LoggingSeverity.ERROR) {
+            printRed(message);
+        } else {
+            System.out.println(message);
+        }
 
         try(PostgresDriver postgresDriver = new PostgresDriver()){
             Connection conn = postgresDriver.establishConnection();
