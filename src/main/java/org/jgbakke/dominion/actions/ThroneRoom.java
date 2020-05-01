@@ -20,12 +20,10 @@ public class ThroneRoom implements DominionCard {
         DominionCard throneRoomedCard = player.chooseAction(req.resources.actions);
 
         if(throneRoomedCard != null) {
-            // TODO: Test throne room
             for (int i = 0; i < 2; i++) {
                 req.callingGame.playCard(player, throneRoomedCard);
             }
         }
-
 
         // Give 0 resources here because they should already have them added from the playCard function
         return ActionResponse.emptyResponse();
@@ -34,5 +32,10 @@ public class ThroneRoom implements DominionCard {
     @Override
     public ModifierWrapper turnBonusResources() {
         return throneRoomResources;
+    }
+
+    @Override
+    public CardType getCardType() {
+        return CardType.ACTION;
     }
 }

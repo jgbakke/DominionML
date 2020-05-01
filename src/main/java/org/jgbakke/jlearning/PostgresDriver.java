@@ -41,8 +41,6 @@ public class PostgresDriver implements Closeable {
                 Array state = rs.getArray(1);
                 Array actionScores = rs.getArray(2);
 
-
-                // TODO: Deal with this cast
                 State s = new State(loadPostgresArray(state));
                 ActionScore[] actionScoresArr = new ActionScore[ActionContainer.getInstance().getActionsCount()];
 

@@ -3,7 +3,6 @@ package org.jgbakke.dominion;
 import org.jgbakke.dominion.actions.ActionRequest;
 import org.jgbakke.dominion.actions.ActionResponse;
 import org.jgbakke.dominion.actions.DominionCard;
-import org.jgbakke.dominion.actions.ThroneRoom;
 import org.jgbakke.dominion.players.Player;
 import org.jgbakke.dominion.players.QLearningPlayer;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -59,7 +58,6 @@ public class Game {
     }
 
     private void takePlayerTurn(Player p){
-        System.out.println("Starting turn...");
         p.resetResources();
 
         while(p.getResources().actions > 0){
@@ -73,12 +71,13 @@ public class Game {
                 break;
             }
 
-            // TODO: Remove this line
-            chosenCard = new ThroneRoom();
-
             playCard(p, chosenCard);
 
         }
+
+        // Now lay our coins on the table so everybody can see
+        // "KEITH SHOW YOUR CARDS!!!"
+        p.addTreasureToModifiers();
 
         List<DominionCard> chosenCards = p.buyPhase(p.getResources().coins);
         chosenCards.forEach(p::gainNewCard);

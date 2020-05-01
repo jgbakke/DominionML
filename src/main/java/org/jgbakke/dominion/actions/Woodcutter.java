@@ -23,4 +23,9 @@ public class Woodcutter implements DominionCard {
     public ModifierWrapper turnBonusResources() {
         return woodcutterBonuses;
     }
+
+    @Override
+    public CardType getCardType() {
+        return CardType.ACTION;
+    }
 }

@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 public class ActionContainer {
     private static ActionContainer actionContainer = new ActionContainer();
 
-    // TODO: Remove
     private Action[] actionsArray;
 
     private int actionsCount;

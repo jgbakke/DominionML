@@ -4,11 +4,13 @@ import org.jgbakke.dominion.ModifierWrapper;
 import org.jgbakke.dominion.actions.DominionCard;
 import org.jgbakke.dominion.actions.ThroneRoom;
 import org.jgbakke.dominion.actions.Woodcutter;
+import org.jgbakke.dominion.treasures.Copper;
+import org.jgbakke.dominion.treasures.Gold;
+import org.jgbakke.dominion.treasures.Silver;
+import org.jgbakke.dominion.treasures.Treasure;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
+import java.util.stream.Stream;
 
 public abstract class Player {
     private static final int HAND_SIZE = 5;
@@ -21,13 +23,15 @@ public abstract class Player {
     protected ArrayList<DominionCard> hand = new ArrayList<>();
 
     public void setStartingDeck(){
-        for(int i = 0; i < 1; i++){
-            discard.add(new ThroneRoom());
+        for(int i = 0; i < 7; i++){
+            discard.add(new Copper());
         }
 
-        for(int i = 1; i < 10; i++){
-            discard.add(new Woodcutter());
+        for(int i = 7; i < 9; i++){
+            discard.add(new Silver());
         }
+
+        discard.add(new Gold());
 
         shuffleDeck();
     }
@@ -67,6 +71,18 @@ public abstract class Player {
     public void discardHand(){
         discard.addAll(hand);
         hand.clear();
+    }
+
+    public void addTreasureToModifiers(){
+        resources.combineWith(new ModifierWrapper(0, 0, treasureValueInHand(), 0));
+    }
+
+    public int treasureValueInHand(){
+        return hand.stream()
+                .filter(c -> c.getCardType().equals(DominionCard.CardType.TREASURE))
+                .map(c -> (Treasure)c)
+                .mapToInt(c -> c.VALUE)
+                .sum();
     }
 
     public void gainNewCard(DominionCard card){

@@ -16,8 +16,11 @@ public class QLearningPlayer extends Player {
 
     @Override
     public DominionCard chooseAction(int actionsRemaining) {
-        // TODO: A real implementation
-        return hand.get(0);
+        // Current algorithm: Just pick the first action card
+        return hand.stream()
+                .filter(c -> c.getCardType().equals(DominionCard.CardType.ACTION))
+                .findFirst()
+                .orElse(null);
     }
 
     @Override
