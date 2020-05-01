@@ -13,10 +13,14 @@ public class ModifierWrapper {
         this.buys = buys;
     }
 
-    public void combineModifiers(ModifierWrapper mw) {
+    public static ModifierWrapper noModifiers(){
+        return new ModifierWrapper(0,0,0,0);
+    }
+
+    public void combineWith(ModifierWrapper mw) {
         actions += mw.actions;
         cards += mw.cards;
         coins += mw.coins;
-        buys += mw.coins;
+        buys += mw.buys;
     }
 }

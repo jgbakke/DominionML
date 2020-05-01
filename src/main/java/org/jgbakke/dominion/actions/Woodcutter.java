@@ -14,8 +14,9 @@ public class Woodcutter implements DominionCard {
     }
 
     @Override
-    public void executeAction() {
+    public ActionResponse executeAction(Object inputWrapper) {
         Logger.log("Woodcutter executed!");
+        return ActionResponse.emptyResponse();
     }
 
     @Override

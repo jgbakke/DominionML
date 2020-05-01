@@ -1,6 +1,7 @@
 package org.jgbakke.dominion.actions;
 
 import org.jgbakke.dominion.ModifierWrapper;
+import org.jgbakke.dominion.players.Player;
 import org.jgbakke.jlearning.Action;
 import org.jgbakke.jlearning.Logger;
 
@@ -13,8 +14,21 @@ public class ThroneRoom implements DominionCard {
     }
 
     @Override
-    public void executeAction() {
-        Logger.log("Throne Room executed!");
+    public ActionResponse executeAction(Object inputWrapper) {
+        ActionRequest req = (ActionRequest) inputWrapper;
+        Player player = req.player;
+        DominionCard throneRoomedCard = player.chooseAction(req.resources.actions);
+
+        if(throneRoomedCard != null) {
+            // TODO: Test throne room
+            for (int i = 0; i < 2; i++) {
+                req.callingGame.playCard(player, throneRoomedCard);
+            }
+        }
+
+
+        // Give 0 resources here because they should already have them added from the playCard function
+        return ActionResponse.emptyResponse();
     }
 
     @Override
