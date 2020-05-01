@@ -84,6 +84,8 @@ public class Game {
 
         p.discardHand();
         p.drawHand();
+
+        System.out.println(String.format("%d VP", p.getVictoryPoints()));
     }
 
     private Player[] createPlayers(int num){

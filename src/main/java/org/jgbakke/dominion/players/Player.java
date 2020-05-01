@@ -8,6 +8,10 @@ import org.jgbakke.dominion.treasures.Copper;
 import org.jgbakke.dominion.treasures.Gold;
 import org.jgbakke.dominion.treasures.Silver;
 import org.jgbakke.dominion.treasures.Treasure;
+import org.jgbakke.dominion.victories.Duchy;
+import org.jgbakke.dominion.victories.Estate;
+import org.jgbakke.dominion.victories.Province;
+import org.jgbakke.dominion.victories.Victory;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -22,16 +26,16 @@ public abstract class Player {
     protected Stack<DominionCard> discard = new Stack<>();
     protected ArrayList<DominionCard> hand = new ArrayList<>();
 
+    protected ArrayList<DominionCard> allCards = new ArrayList<>();
+
     public void setStartingDeck(){
         for(int i = 0; i < 7; i++){
-            discard.add(new Copper());
+            gainNewCard(new Copper());
         }
 
-        for(int i = 7; i < 9; i++){
-            discard.add(new Silver());
+        for(int i = 7; i < 10; i++){
+            gainNewCard(new Estate());
         }
-
-        discard.add(new Gold());
 
         shuffleDeck();
     }
@@ -85,7 +89,16 @@ public abstract class Player {
                 .sum();
     }
 
+    public int getVictoryPoints(){
+        return allCards.stream()
+                .filter(c -> c.getCardType().equals(DominionCard.CardType.VICTORY))
+                .map(c -> (Victory)c)
+                .mapToInt(c -> c.VICTORY_POINTS)
+                .sum();
+    }
+
     public void gainNewCard(DominionCard card){
+        allCards.add(card);
         discard.add(card);
     }
 
