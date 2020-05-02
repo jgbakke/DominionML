@@ -2,10 +2,7 @@ package org.jgbakke.dominion.players;
 
 import org.jgbakke.dominion.Game;
 import org.jgbakke.dominion.ModifierWrapper;
-import org.jgbakke.dominion.actions.DominionCard;
-import org.jgbakke.dominion.actions.Smithy;
-import org.jgbakke.dominion.actions.ThroneRoom;
-import org.jgbakke.dominion.actions.Woodcutter;
+import org.jgbakke.dominion.actions.*;
 import org.jgbakke.dominion.treasures.Copper;
 import org.jgbakke.dominion.treasures.Gold;
 import org.jgbakke.dominion.treasures.Silver;
@@ -36,7 +33,7 @@ public abstract class Player {
         }
 
         for(int i = 7; i < 10; i++){
-            gainNewCard(new Smithy());
+            gainNewCard(new Market());
         }
 
         shuffleDeck();
@@ -76,6 +73,11 @@ public abstract class Player {
         }
 
         hand.add(deck.pop());
+    }
+
+    public void discardSpecificCard(DominionCard card){
+        hand.remove(card);
+        discard.add(card);
     }
 
     public void discardHand(){

@@ -3,12 +3,11 @@ package org.jgbakke.dominion.actions;
 import org.jgbakke.dominion.ModifierWrapper;
 import org.jgbakke.jlearning.Logger;
 
-public class Smithy implements DominionCard {
-    private static final ModifierWrapper SMITHY_RESOURCES = new ModifierWrapper(0, 3, 0, 0);
-
+public class Market implements DominionCard {
+    private static final ModifierWrapper MARKET_RESOURCES = new ModifierWrapper(1, 1, 1, 1);
     @Override
     public ModifierWrapper turnBonusResources() {
-        return SMITHY_RESOURCES;
+        return MARKET_RESOURCES;
     }
 
     @Override
@@ -18,12 +17,12 @@ public class Smithy implements DominionCard {
 
     @Override
     public int id() {
-        return 2;
+        return 3;
     }
 
     @Override
     public ActionResponse executeAction(Object inputWrapper) {
-        Logger.log("Smithy executed!");
+        Logger.log("Market executed!");
         return ActionResponse.emptyResponse();
     }
 }

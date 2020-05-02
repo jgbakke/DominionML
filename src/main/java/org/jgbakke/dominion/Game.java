@@ -48,6 +48,9 @@ public class Game {
     }
 
     public void playCard(Player p, DominionCard card){
+        // We played it so remove it from the hand
+        p.discardSpecificCard(card);
+
         // First get the +1 card, +2 actions etc.
         p.combineResources(card.turnBonusResources());
 
