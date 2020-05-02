@@ -51,6 +51,9 @@ public class Game {
         // First get the +1 card, +2 actions etc.
         p.combineResources(card.turnBonusResources());
 
+        // Then draw your new cards and mark that you did so
+        useCardBonus(p);
+
         // Then do the special ability and add any bonus resources
         ActionResponse executedBonusResources = (ActionResponse)
                 card.executeAction(
@@ -58,6 +61,15 @@ public class Game {
 
         // Then combine the resources from both sources
         p.combineResources(executedBonusResources.resources);
+
+        // We may have accumulated new cards from the action. Redeem them here
+        // Note that THIS IS IMPORTANT to do in both places. +x Cards MUST be done BEFORE the card's action
+        useCardBonus(p);
+    }
+
+    private void useCardBonus(Player p){
+        p.drawCards(p.getResources().cards);
+        p.getResources().resetCards();
     }
 
     private void takePlayerTurn(Player p){

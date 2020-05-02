@@ -13,6 +13,10 @@ public class ModifierWrapper {
         this.buys = buys;
     }
 
+    public void resetCards(){
+        this.cards = 0;
+    }
+
     public static ModifierWrapper noModifiers(){
         return new ModifierWrapper(0,0,0,0);
     }

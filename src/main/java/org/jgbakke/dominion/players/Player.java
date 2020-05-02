@@ -3,6 +3,7 @@ package org.jgbakke.dominion.players;
 import org.jgbakke.dominion.Game;
 import org.jgbakke.dominion.ModifierWrapper;
 import org.jgbakke.dominion.actions.DominionCard;
+import org.jgbakke.dominion.actions.Smithy;
 import org.jgbakke.dominion.actions.ThroneRoom;
 import org.jgbakke.dominion.actions.Woodcutter;
 import org.jgbakke.dominion.treasures.Copper;
@@ -35,7 +36,7 @@ public abstract class Player {
         }
 
         for(int i = 7; i < 10; i++){
-            gainNewCard(new Estate());
+            gainNewCard(new Smithy());
         }
 
         shuffleDeck();
@@ -54,7 +55,11 @@ public abstract class Player {
     }
 
     public void drawHand(){
-        for (int i = 0; i < HAND_SIZE; i++) {
+        drawCards(HAND_SIZE);
+    }
+
+    public void drawCards(int cards){
+        for (int i = 0; i < cards; i++) {
             addCardToHand();
         }
     }
