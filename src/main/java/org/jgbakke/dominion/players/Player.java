@@ -1,19 +1,15 @@
 package org.jgbakke.dominion.players;
 
-import org.jgbakke.dominion.Game;
+import org.jgbakke.dominion.HandVisitor;
 import org.jgbakke.dominion.ModifierWrapper;
 import org.jgbakke.dominion.actions.*;
 import org.jgbakke.dominion.treasures.Copper;
 import org.jgbakke.dominion.treasures.Gold;
-import org.jgbakke.dominion.treasures.Silver;
 import org.jgbakke.dominion.treasures.Treasure;
-import org.jgbakke.dominion.victories.Duchy;
 import org.jgbakke.dominion.victories.Estate;
-import org.jgbakke.dominion.victories.Province;
 import org.jgbakke.dominion.victories.Victory;
 
 import java.util.*;
-import java.util.stream.Stream;
 
 public abstract class Player {
     private static final int HAND_SIZE = 5;
@@ -28,12 +24,20 @@ public abstract class Player {
     protected ArrayList<DominionCard> allCards = new ArrayList<>();
 
     public void setStartingDeck(){
-        for(int i = 0; i < 7; i++){
+        for(int i = 0; i < 5; i++){
             gainNewCard(new Copper());
         }
 
-        for(int i = 7; i < 10; i++){
-            gainNewCard(new Market());
+        for(int i = 0; i < 7; i++){
+            gainNewCard(new Gold());
+        }
+
+        for(int i = 0; i < 3; i++){
+            gainNewCard(new Cellar());
+        }
+
+        for(int i = 0; i < 3; i++){
+            gainNewCard(new Estate());
         }
 
         shuffleDeck();
@@ -103,6 +107,23 @@ public abstract class Player {
                 .map(c -> (Victory)c)
                 .mapToInt(c -> c.VICTORY_POINTS)
                 .sum();
+    }
+
+    public int totalCoinValue(boolean includeActionCards){
+        // Returns the total coin value, optionally including +coin actions deck from the
+        return deck.stream()
+                .filter(c -> c.getCardType().equals(DominionCard.CardType.TREASURE) ||
+                        (includeActionCards && c.getCardType().equals(DominionCard.CardType.ACTION)))
+                .mapToInt(c -> c.turnBonusResources().coins)
+                .sum();
+    }
+
+    public double averageCoinValue(boolean includeActionCards){
+        return totalCoinValue(includeActionCards) / (double)(deck.size());
+    }
+
+    public List<DominionCard> acceptHandVisitor(HandVisitor visitor){
+        return visitor.visit(this, hand);
     }
 
     public void gainNewCard(DominionCard card){
