@@ -10,6 +10,8 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import java.util.List;
 
 public class Game {
+    private Bank bank;
+
     private int id;
 
     private int maxRounds;
@@ -25,6 +27,7 @@ public class Game {
         this.id = id;
         this.players = createPlayers(players);
         this.maxRounds = maxRounds;
+        this.bank = new Bank();
     }
 
     public void startGame(){
@@ -80,12 +83,17 @@ public class Game {
         p.addTreasureToModifiers();
 
         List<DominionCard> chosenCards = p.buyPhase(p.getResources().coins);
-        chosenCards.forEach(p::gainNewCard);
+        giveCardsToPlayer(chosenCards, p);
 
         p.discardHand();
         p.drawHand();
+    }
 
-        System.out.println(String.format("%d VP", p.getVictoryPoints()));
+    private void giveCardsToPlayer(List<DominionCard> cards, Player p){
+        cards.forEach( c -> {
+            bank.takeCard(c.id());
+            p.gainNewCard(c);
+        });
     }
 
     private Player[] createPlayers(int num){

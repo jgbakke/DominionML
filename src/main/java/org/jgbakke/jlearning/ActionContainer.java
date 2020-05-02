@@ -1,14 +1,8 @@
 package org.jgbakke.jlearning;
 
-import org.jgbakke.dominion.actions.ThroneRoom;
-import org.jgbakke.dominion.actions.Woodcutter;
-
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Properties;
-import java.util.stream.Collectors;
 
 public class ActionContainer {
     private static ActionContainer actionContainer = new ActionContainer();
@@ -19,6 +13,10 @@ public class ActionContainer {
 
     private ActionContainer(){
         initContainer();
+    }
+
+    public Action[] getActions(){
+        return actionsArray;
     }
 
     public static ActionContainer getInstance(){

@@ -1,5 +1,6 @@
 package org.jgbakke.dominion.players;
 
+import org.jgbakke.dominion.Game;
 import org.jgbakke.dominion.ModifierWrapper;
 import org.jgbakke.dominion.actions.DominionCard;
 import org.jgbakke.dominion.actions.ThroneRoom;
