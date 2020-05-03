@@ -1,16 +1,19 @@
-package org.jgbakke.dominion.victories;
+package org.jgbakke.dominion.actions;
 
 import org.jgbakke.dominion.ModifierWrapper;
 import org.jgbakke.dominion.actions.DominionCard;
 
-public class Victory implements DominionCard {
-    public final int VICTORY_POINTS;
+public class Treasure implements DominionCard {
 
-    public final int COST;
+    public final int VALUE;
+    private final int ID;
 
-    public Victory(int c, int pts){
+    private final int COST;
+
+    public Treasure(int c, int v, int id){
+        VALUE = v;
+        ID = id;
         COST = c;
-        VICTORY_POINTS = pts;
     }
 
     @Override
@@ -20,17 +23,17 @@ public class Victory implements DominionCard {
 
     @Override
     public ModifierWrapper turnBonusResources() {
-        return ModifierWrapper.noModifiers();
+        return new ModifierWrapper(0, 0, VALUE, 0);
     }
 
     @Override
     public CardType getCardType() {
-        return CardType.VICTORY;
+        return CardType.TREASURE;
     }
 
     @Override
     public int id() {
-        return -1;
+        return ID;
     }
 
     @Override

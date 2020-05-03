@@ -1,4 +1,4 @@
-package org.jgbakke.dominion.victories;
+package org.jgbakke.dominion.actions;
 
 public class Estate extends Victory {
     public Estate() {

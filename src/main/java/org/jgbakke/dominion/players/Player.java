@@ -4,11 +4,11 @@ import org.jgbakke.dominion.DominionStateUpdater;
 import org.jgbakke.dominion.HandVisitor;
 import org.jgbakke.dominion.ModifierWrapper;
 import org.jgbakke.dominion.actions.*;
-import org.jgbakke.dominion.treasures.Copper;
-import org.jgbakke.dominion.treasures.Gold;
-import org.jgbakke.dominion.treasures.Treasure;
-import org.jgbakke.dominion.victories.Estate;
-import org.jgbakke.dominion.victories.Victory;
+import org.jgbakke.dominion.actions.Copper;
+import org.jgbakke.dominion.actions.Gold;
+import org.jgbakke.dominion.actions.Treasure;
+import org.jgbakke.dominion.actions.Estate;
+import org.jgbakke.dominion.actions.Victory;
 import org.jgbakke.jlearning.State;
 
 import java.util.*;
@@ -28,16 +28,8 @@ public abstract class Player {
     protected State currentState = new State(new DominionStateUpdater());
 
     public void setStartingDeck(){
-        for(int i = 0; i < 5; i++){
-            gainNewCard(new Copper());
-        }
-
         for(int i = 0; i < 7; i++){
-            gainNewCard(new Gold());
-        }
-
-        for(int i = 0; i < 3; i++){
-            gainNewCard(new Cellar());
+            gainNewCard(new Copper());
         }
 
         for(int i = 0; i < 3; i++){

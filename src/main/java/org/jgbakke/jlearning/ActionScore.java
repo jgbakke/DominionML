@@ -1,8 +1,8 @@
 package org.jgbakke.jlearning;
 
 public class ActionScore {
-    private Action action;
-    private int score;
+    public final Action action;
+    public final int score;
 
     public ActionScore(Action action, int score) {
         this.action = action;

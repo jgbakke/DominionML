@@ -21,7 +21,9 @@ public class Bank {
     }
 
     public void takeCard(int cardID){
-        cardsRemaining[cardID]--;
+        if(cardID >= 0) {
+            cardsRemaining[cardID]--;
+        }
     }
 
     private int numberOfCardsForType(DominionCard.CardType type){

@@ -5,6 +5,7 @@ import org.jgbakke.dominion.actions.ActionResponse;
 import org.jgbakke.dominion.actions.DominionCard;
 import org.jgbakke.dominion.players.Player;
 import org.jgbakke.dominion.players.QLearningPlayer;
+import org.jgbakke.jlearning.Logger;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.List;
@@ -45,6 +46,8 @@ public class Game {
                 takePlayerTurn(player);
             }
         }
+
+        Logger.log(id, "GAME ENDED", Logger.LoggingSeverity.WARN);
     }
 
     public void playCard(Player p, DominionCard card){

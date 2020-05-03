@@ -1,4 +1,4 @@
-package org.jgbakke.dominion.treasures;
+package org.jgbakke.dominion.actions;
 
 public class Copper extends Treasure {
     public Copper() {

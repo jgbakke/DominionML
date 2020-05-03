@@ -17,4 +17,12 @@ public class State {
     public void updateState(Action taken){
         stateUpdater.updateState(taken, stateIdentifier);
     }
+
+    public State getResultingState(Action taken){
+        // This should return a new State object that this state will transition to if taken is executed
+        State newState = new State(stateIdentifier, stateUpdater);
+        newState.updateState(taken);
+        return newState;
+
+    }
 }

@@ -1,14 +1,17 @@
 package org.jgbakke.jlearning;
 
 
+import org.jgbakke.dominion.actions.Copper;
+
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.*;
 
 public class QLearning {
+    private List<Action> actionList;
 
     private ActionContainer actionContainer;
+
+    private Random rand = new Random();
 
     private HashMap<State, ActionScore[]> qTable;
 
@@ -16,24 +19,53 @@ public class QLearning {
     private double discountFactor = 0.9;
     private double randomChoiceChance = 0.1;
 
-    public Action chooseAction(State currentState, Collection<Action> disallowedActions){
-        // disallowedActions are provided by the client and should not be considered
-        Action chosen = actionContainer.getAction(0);
+
+    // By default here, all actions are allowed
+    public Action chooseAction(State currentState){
+        return chooseAction(currentState, actionList);
+    }
+
+    // Pass allowed actions when some should be ineligible to perform.
+    // For example, if you cannot afford to buy an action
+    public Action chooseAction(State currentState, List<Action> allowedActions){
+        if(allowedActions.isEmpty()){
+            // If you are not allowed to buy anything just buy a copper
+            return new Copper();
+        }
+
+        Action chosen = Math.random() < randomChoiceChance ?
+                chooseRandomAction(allowedActions) :
+                chooseOptimalAction(currentState, allowedActions);
+
+        return createNewInstance(chosen);
+    }
+
+    public Action chooseRandomAction(List<Action> allowedActions){
+        return allowedActions.get(rand.nextInt(allowedActions.size()));
+    }
+
+    public Action chooseOptimalAction(State current, Collection<Action> allowedActions){
+        // TODO: Choose optimal action, make sure to update state first
+        return allowedActions.stream().max(Comparator.comparingDouble(act -> {
+            State next = current.getResultingState(act);
+            return maxScoreForState(next);
+        })).get();
+    }
+
+    private static Action createNewInstance(Action a){
         try {
-            return chosen.getClass().newInstance();
+            return a.getClass().newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public Action chooseAction(State currentState){
-        return chooseAction(currentState, new LinkedList<>());
-    }
 
     public QLearning(){
         loadQTable();
         actionContainer = ActionContainer.getInstance();
+        actionList = Arrays.asList(actionContainer.getActions());
     }
 
     public static class QLearningBuilder {
@@ -64,6 +96,16 @@ public class QLearning {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+    }
+
+    private int maxScoreForState(State s){
+        if(!qTable.containsKey(s)){
+            return 0;
+        }
+
+        List<ActionScore> scores = Arrays.asList(qTable.get(s));
+
+        return scores.stream().max(Comparator.comparingInt(scr -> scr.score)).get().score;
     }
 
 }
