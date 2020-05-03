@@ -21,6 +21,7 @@ public class QLearningPlayer extends Player {
 
     @Override
     public DominionCard chooseAction(int actionsRemaining) {
+        // TODO: More advanced implementation
         // Current algorithm: Just pick the first action card
         return hand.stream()
                 .filter(c -> c.getCardType().equals(DominionCard.CardType.ACTION))
@@ -34,11 +35,11 @@ public class QLearningPlayer extends Player {
         LinkedList<DominionCard> chosenBuys = new LinkedList<>();
 
         while(coins > 0 && buys > 0){
-            List<Action> invalidCards = invalidBuyChoices(coins);
+            List<Action> validCards = validBuyChoices(coins);
 
             DominionCard chosen = coins >= 8 ?
                     new Province()
-                    : (DominionCard) qLearning.chooseAction(currentState, invalidCards);
+                    : (DominionCard) qLearning.chooseAction(currentState, validCards);
 
             chosenBuys.add(chosen);
 
@@ -54,17 +55,17 @@ public class QLearningPlayer extends Player {
         return game.bank.hasCardsRemaining(card.id()) && card.cost() <= coins;
     }
 
-    private List<Action> invalidBuyChoices(int coins){
-        List<Action> invalidChoices = new LinkedList<>();
+    private List<Action> validBuyChoices(int coins){
+        List<Action> validChoices = new LinkedList<>();
 
         for (Action action : ActionContainer.getInstance().getActions()) {
             DominionCard card = (DominionCard)action;
 
-            if(!canBuyCard(card, coins)){
-                invalidChoices.add(card);
+            if(canBuyCard(card, coins)){
+                validChoices.add(card);
             }
         }
 
-        return invalidChoices;
+        return validChoices;
     }
 }

@@ -1,7 +1,6 @@
 package org.jgbakke.jlearning;
 
 import java.io.Closeable;
-import java.io.IOException;
 import java.sql.*;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -63,7 +62,7 @@ public class PostgresDriver implements Closeable {
 
     @Override
     public void close() {
-        System.out.println("Closing Postgres Driver");
+        //System.out.println("Closing Postgres Driver");
 
         try {
             c.close();

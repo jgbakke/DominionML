@@ -17,7 +17,7 @@ public class QLearning {
 
     private double learningRate = 1;
     private double discountFactor = 0.9;
-    private double randomChoiceChance = 0.1;
+    private double randomChoiceChance = 1;
 
 
     // By default here, all actions are allowed
@@ -45,7 +45,6 @@ public class QLearning {
     }
 
     public Action chooseOptimalAction(State current, Collection<Action> allowedActions){
-        // TODO: Choose optimal action, make sure to update state first
         return allowedActions.stream().max(Comparator.comparingDouble(act -> {
             State next = current.getResultingState(act);
             return maxScoreForState(next);

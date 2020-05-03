@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class Logger {
+    private static final int MINIMUM_LEVEL = LoggingSeverity.WARN.ordinal();
 
     private static final String RESET_COLOR ="\033[0m";
     private static final String RED_COLOR ="\033[0;31m";
@@ -27,6 +28,10 @@ public class Logger {
     }
 
     public static void log(int gameID, String message, LoggingSeverity severity){
+        if(severity.ordinal() < MINIMUM_LEVEL){
+            return;
+        }
+
         if(severity == LoggingSeverity.ERROR) {
             printRed(message);
         } else {

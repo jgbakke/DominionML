@@ -20,7 +20,7 @@ public class Game {
     private Player[] players;
 
     public static void main(String[] args){
-        Game g = new Game(-2, 1, 5);
+        Game g = new Game(-2, 1, 20);
         g.startGame();
     }
 
@@ -32,12 +32,20 @@ public class Game {
     }
 
     public void startGame(){
+        long start = System.nanoTime();
+
         for (Player player : players) {
             player.setStartingDeck();
             player.drawHand();
         }
 
         takeTurns();
+
+        long finish = System.nanoTime();
+        long elapsed = finish - start;
+        double ms = elapsed / Math.pow(10, 6);
+        Logger.log(id, String.format("GAME ENDED IN %.2f MS", ms), Logger.LoggingSeverity.WARN);
+
     }
 
     private void takeTurns(){
@@ -46,8 +54,6 @@ public class Game {
                 takePlayerTurn(player);
             }
         }
-
-        Logger.log(id, "GAME ENDED", Logger.LoggingSeverity.WARN);
     }
 
     public void playCard(Player p, DominionCard card){
