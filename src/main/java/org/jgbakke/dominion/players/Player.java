@@ -25,7 +25,7 @@ public abstract class Player {
 
     protected ArrayList<DominionCard> allCards = new ArrayList<>();
 
-    private State currentState = new State(new DominionStateUpdater());
+    protected State currentState = new State(new DominionStateUpdater());
 
     public void setStartingDeck(){
         for(int i = 0; i < 5; i++){
@@ -140,6 +140,6 @@ public abstract class Player {
     public abstract DominionCard chooseAction(int actionsRemaining);
 
     /// Return a List of the cards you are buying this turn
-    public abstract List<DominionCard> buyPhase(int coins);
+    public abstract List<DominionCard> buyPhase(int coins, int buys);
 
 }

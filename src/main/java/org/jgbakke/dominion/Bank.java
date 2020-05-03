@@ -16,6 +16,10 @@ public class Bank {
         initStartingCards();
     }
 
+    public boolean hasCardsRemaining(int cardID){
+        return cardsRemaining[cardID] > 0;
+    }
+
     public void takeCard(int cardID){
         cardsRemaining[cardID]--;
     }

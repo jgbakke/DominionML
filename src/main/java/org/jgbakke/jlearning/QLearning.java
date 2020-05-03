@@ -2,9 +2,13 @@ package org.jgbakke.jlearning;
 
 
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 public class QLearning {
+
+    private ActionContainer actionContainer;
 
     private HashMap<State, ActionScore[]> qTable;
 
@@ -12,12 +16,24 @@ public class QLearning {
     private double discountFactor = 0.9;
     private double randomChoiceChance = 0.1;
 
+    public Action chooseAction(State currentState, Collection<Action> disallowedActions){
+        // disallowedActions are provided by the client and should not be considered
+        Action chosen = actionContainer.getAction(0);
+        try {
+            return chosen.getClass().newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public Action chooseAction(State currentState){
-        return null;
+        return chooseAction(currentState, new LinkedList<>());
     }
 
     public QLearning(){
         loadQTable();
+        actionContainer = ActionContainer.getInstance();
     }
 
     public static class QLearningBuilder {

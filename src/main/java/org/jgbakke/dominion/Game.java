@@ -10,7 +10,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import java.util.List;
 
 public class Game {
-    private Bank bank;
+    public final Bank bank;
 
     private int id;
 
@@ -97,7 +97,7 @@ public class Game {
         // "KEITH SHOW YOUR CARDS!!!"
         p.addTreasureToModifiers();
 
-        List<DominionCard> chosenCards = p.buyPhase(p.getResources().coins);
+        List<DominionCard> chosenCards = p.buyPhase(p.getResources().coins, p.getResources().buys);
         giveCardsToPlayer(chosenCards, p);
 
         p.discardHand();
@@ -115,7 +115,7 @@ public class Game {
         players = new Player[num];
 
         if(num == 1){
-            players[0] = new QLearningPlayer();
+            players[0] = new QLearningPlayer(this);
         } else {
             throw new NotImplementedException();
         }
