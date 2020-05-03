@@ -6,7 +6,7 @@ public class State {
     private StateUpdater stateUpdater;
 
     public State(int[] stateIdentifier, StateUpdater stateUpdater){
-        this.stateIdentifier = stateIdentifier;
+        this.stateIdentifier = stateIdentifier.clone();
         this.stateUpdater = stateUpdater;
     }
 
@@ -23,6 +23,5 @@ public class State {
         State newState = new State(stateIdentifier, stateUpdater);
         newState.updateState(taken);
         return newState;
-
     }
 }

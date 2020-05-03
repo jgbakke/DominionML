@@ -44,6 +44,7 @@ public class Game {
         long finish = System.nanoTime();
         long elapsed = finish - start;
         double ms = elapsed / Math.pow(10, 6);
+        Logger.log(id, String.format("TOTAL VP: %d", players[0].getVictoryPoints()), Logger.LoggingSeverity.WARN);
         Logger.log(id, String.format("GAME ENDED IN %.2f MS", ms), Logger.LoggingSeverity.WARN);
 
     }

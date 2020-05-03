@@ -25,8 +25,6 @@ public abstract class Player {
 
     protected ArrayList<DominionCard> allCards = new ArrayList<>();
 
-    protected State currentState = new State(new DominionStateUpdater());
-
     public void setStartingDeck(){
         for(int i = 0; i < 7; i++){
             gainNewCard(new Copper());
@@ -123,7 +121,7 @@ public abstract class Player {
     }
 
     public void gainNewCard(DominionCard card){
-        currentState.updateState(card);
+        // TODO: Update the Q-Learning table
         allCards.add(card);
         discard.add(card);
     }
