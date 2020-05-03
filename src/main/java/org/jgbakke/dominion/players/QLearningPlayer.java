@@ -1,5 +1,6 @@
 package org.jgbakke.dominion.players;
 
+import org.jgbakke.dominion.DominionReward;
 import org.jgbakke.dominion.DominionStateUpdater;
 import org.jgbakke.dominion.Game;
 import org.jgbakke.dominion.actions.Copper;
@@ -15,7 +16,7 @@ import java.util.List;
 
 public class QLearningPlayer extends Player {
     private Game game;
-    private QLearning qLearning = new QLearning();
+    private QLearning qLearning = new QLearning(new DominionReward());
 
     protected State currentState = new State(new DominionStateUpdater());
 
@@ -91,7 +92,7 @@ public class QLearningPlayer extends Player {
 
     @Override
     public void gainNewCard(DominionCard card){
-        //qle
+        qLearning.updateQTable(currentState, card);
         currentState.updateState(card);
         super.gainNewCard(card);
     }

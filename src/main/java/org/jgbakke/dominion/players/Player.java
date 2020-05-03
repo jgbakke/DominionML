@@ -121,7 +121,7 @@ public abstract class Player {
     }
 
     public void gainNewCard(DominionCard card){
-        // TODO: Update the Q-Learning table
+        // TODO: qLearning update qTable
         allCards.add(card);
         discard.add(card);
     }

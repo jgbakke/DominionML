@@ -40,10 +40,10 @@ public class PostgresDriver implements Closeable {
                 Array state = rs.getArray(1);
                 Array actionScores = rs.getArray(2);
 
-                State s = new ImmutableState(loadPostgresArray(state));
+                State s = new ImmutableState(loadPostgresIntArray(state));
                 ActionScore[] actionScoresArr = new ActionScore[ActionContainer.getInstance().getActionsCount()];
 
-                int[] scores = loadPostgresArray(actionScores);
+                double[] scores = loadPostgresDoubleArray(actionScores);
 
                 for (int actId = 0; actId < scores.length; actId++) {
                     actionScoresArr[actId] = new ActionScore(actId, scores[actId]);
@@ -56,8 +56,12 @@ public class PostgresDriver implements Closeable {
         return qTable;
     }
 
-    public static int[] loadPostgresArray(Array arr) throws SQLException {
+    public static int[] loadPostgresIntArray(Array arr) throws SQLException {
         return Arrays.stream((Integer[])arr.getArray()).mapToInt(Integer::intValue).toArray();
+    }
+
+    public static double[] loadPostgresDoubleArray(Array arr) throws SQLException {
+        return Arrays.stream((Double[])arr.getArray()).mapToDouble(Double::doubleValue).toArray();
     }
 
     @Override

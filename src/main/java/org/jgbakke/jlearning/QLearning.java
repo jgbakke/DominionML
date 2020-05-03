@@ -15,9 +15,18 @@ public class QLearning {
 
     private HashMap<State, ActionScore[]> qTable;
 
+    private Reward reward;
+
     private double learningRate = 1;
     private double discountFactor = 0.9;
     private double randomChoiceChance = 0.1;
+
+    public QLearning(Reward reward){
+        loadQTable();
+        actionContainer = ActionContainer.getInstance();
+        actionList = Arrays.asList(actionContainer.getActions());
+        this.reward = reward;
+    }
 
 
     // By default here, all actions are allowed
@@ -46,11 +55,11 @@ public class QLearning {
 
     public Action chooseOptimalAction(State current, Collection<Action> allowedActions){
         LinkedList<Action> optimalActions = new LinkedList<>();
-        int maxScore = -1;
+        double maxScore = -1;
 
         for (Action action : allowedActions) {
             // State next = current.getResultingState(action);
-            int nextScore = getScoreForAction(current, action);
+            double nextScore = getScoreForAction(current, action);
 
             if(nextScore > maxScore){
                 optimalActions = new LinkedList<>();
@@ -79,15 +88,12 @@ public class QLearning {
         }
     }
 
-
-    public QLearning(){
-        loadQTable();
-        actionContainer = ActionContainer.getInstance();
-        actionList = Arrays.asList(actionContainer.getActions());
-    }
-
     public static class QLearningBuilder {
-        private QLearning qLearning = new QLearning();
+        private QLearning qLearning;
+
+        public QLearningBuilder(Reward reward){
+            qLearning = new QLearning(reward);
+        }
 
         public void setLearningRate(double learningRate) {
             qLearning.learningRate = learningRate;
@@ -116,7 +122,7 @@ public class QLearning {
         }
     }
 
-    private int getScoreForAction(State current, Action action){
+    private double getScoreForAction(State current, Action action){
         if(!qTable.containsKey(current)){
             return 0;
         }
@@ -124,17 +130,19 @@ public class QLearning {
         return qTable.get(current)[action.id()].score;
     }
 
-    private int maxScoreForState(State s){
+    private double maxScoreForState(State s){
         if(!qTable.containsKey(s)){
             return 0;
         }
 
         List<ActionScore> scores = Arrays.asList(qTable.get(s));
 
-        return scores.stream().max(Comparator.comparingInt(scr -> scr.score)).get().score;
+        return scores.stream().max(Comparator.comparingDouble(scr -> scr.score)).get().score;
     }
 
     public void updateQTable(State beforeAction, Action action){
+        double rewardValue = reward.getReward(action);
+
 
     }
 
