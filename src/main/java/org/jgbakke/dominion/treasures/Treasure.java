@@ -8,9 +8,17 @@ public class Treasure implements DominionCard {
     public final int VALUE;
     private final int ID;
 
-    public Treasure(int v, int id){
+    private final int COST;
+
+    public Treasure(int c, int v, int id){
         VALUE = v;
         ID = id;
+        COST = c;
+    }
+
+    @Override
+    public int cost() {
+        return COST;
     }
 
     @Override

@@ -10,6 +10,11 @@ public class Cellar implements DominionCard {
     private final CellarVisitor cellarVisitor = new CellarVisitor();
 
     @Override
+    public int cost() {
+        return 2;
+    }
+
+    @Override
     public ModifierWrapper turnBonusResources() {
         return CELLAR_RESOURCES;
     }

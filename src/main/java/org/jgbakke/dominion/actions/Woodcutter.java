@@ -20,6 +20,11 @@ public class Woodcutter implements DominionCard {
     }
 
     @Override
+    public int cost() {
+        return 3;
+    }
+
+    @Override
     public ModifierWrapper turnBonusResources() {
         return woodcutterBonuses;
     }

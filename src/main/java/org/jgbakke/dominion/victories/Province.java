@@ -2,6 +2,6 @@ package org.jgbakke.dominion.victories;
 
 public class Province extends Victory {
     public Province() {
-        super(6);
+        super(8, 6);
     }
 }

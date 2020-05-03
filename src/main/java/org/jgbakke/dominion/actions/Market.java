@@ -5,6 +5,12 @@ import org.jgbakke.jlearning.Logger;
 
 public class Market implements DominionCard {
     private static final ModifierWrapper MARKET_RESOURCES = new ModifierWrapper(1, 1, 1, 1);
+
+    @Override
+    public int cost() {
+        return 5;
+    }
+
     @Override
     public ModifierWrapper turnBonusResources() {
         return MARKET_RESOURCES;

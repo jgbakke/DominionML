@@ -30,6 +30,11 @@ public class ThroneRoom implements DominionCard {
     }
 
     @Override
+    public int cost() {
+        return 4;
+    }
+
+    @Override
     public ModifierWrapper turnBonusResources() {
         return throneRoomResources;
     }

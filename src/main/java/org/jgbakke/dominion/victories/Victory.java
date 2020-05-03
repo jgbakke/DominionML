@@ -6,8 +6,16 @@ import org.jgbakke.dominion.actions.DominionCard;
 public class Victory implements DominionCard {
     public final int VICTORY_POINTS;
 
-    public Victory(int pts){
+    public final int COST;
+
+    public Victory(int c, int pts){
+        COST = c;
         VICTORY_POINTS = pts;
+    }
+
+    @Override
+    public int cost() {
+        return COST;
     }
 
     @Override
