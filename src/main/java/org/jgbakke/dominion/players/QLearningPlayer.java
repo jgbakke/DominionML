@@ -1,6 +1,7 @@
 package org.jgbakke.dominion.players;
 
 import org.jgbakke.dominion.Game;
+import org.jgbakke.dominion.actions.Copper;
 import org.jgbakke.dominion.actions.DominionCard;
 import org.jgbakke.dominion.actions.Province;
 import org.jgbakke.jlearning.Action;
@@ -37,9 +38,19 @@ public class QLearningPlayer extends Player {
         while(coins > 0 && buys > 0){
             List<Action> validCards = validBuyChoices(coins);
 
-            DominionCard chosen = coins >= 8 ?
-                    new Province()
-                    : (DominionCard) qLearning.chooseAction(currentState, validCards);
+            DominionCard chosen;
+
+            if(coins >= 8){
+                chosen = new Province();
+            } else {
+                Action qLearningAction = qLearning.chooseAction(currentState, validCards);
+
+                if(qLearningAction == null){
+                    chosen = new Copper();
+                } else {
+                    chosen = (DominionCard)qLearningAction;
+                }
+            }
 
             chosenBuys.add(chosen);
 

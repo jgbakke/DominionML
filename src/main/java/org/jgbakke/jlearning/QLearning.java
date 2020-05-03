@@ -30,7 +30,7 @@ public class QLearning {
     public Action chooseAction(State currentState, List<Action> allowedActions){
         if(allowedActions.isEmpty()){
             // If you are not allowed to buy anything just buy a copper
-            return new Copper();
+            return null;
         }
 
         Action chosen = Math.random() < randomChoiceChance ?
