@@ -12,8 +12,8 @@ public class QLearning {
     private double discountFactor = 0.9;
     private double randomChoiceChance = 0.1;
 
-    public static void main(String[] args){
-        Logger.log("Hello World!");
+    public Action chooseAction(State currentState){
+        return null;
     }
 
     public QLearning(){

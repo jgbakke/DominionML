@@ -1,5 +1,6 @@
 package org.jgbakke.dominion.players;
 
+import org.jgbakke.dominion.DominionStateUpdater;
 import org.jgbakke.dominion.HandVisitor;
 import org.jgbakke.dominion.ModifierWrapper;
 import org.jgbakke.dominion.actions.*;
@@ -8,6 +9,7 @@ import org.jgbakke.dominion.treasures.Gold;
 import org.jgbakke.dominion.treasures.Treasure;
 import org.jgbakke.dominion.victories.Estate;
 import org.jgbakke.dominion.victories.Victory;
+import org.jgbakke.jlearning.State;
 
 import java.util.*;
 
@@ -22,6 +24,8 @@ public abstract class Player {
     protected ArrayList<DominionCard> hand = new ArrayList<>();
 
     protected ArrayList<DominionCard> allCards = new ArrayList<>();
+
+    private State currentState = new State(new DominionStateUpdater());
 
     public void setStartingDeck(){
         for(int i = 0; i < 5; i++){
@@ -127,6 +131,7 @@ public abstract class Player {
     }
 
     public void gainNewCard(DominionCard card){
+        currentState.updateState(card);
         allCards.add(card);
         discard.add(card);
     }

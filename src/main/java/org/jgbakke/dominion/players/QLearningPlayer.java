@@ -22,6 +22,8 @@ public class QLearningPlayer extends Player {
                 .filter(c -> c.getCardType().equals(DominionCard.CardType.ACTION))
                 .findFirst()
                 .orElse(null);
+
+        //return qLearning.chooseAction();
     }
 
     @Override
