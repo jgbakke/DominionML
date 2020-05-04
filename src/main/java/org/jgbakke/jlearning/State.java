@@ -1,5 +1,7 @@
 package org.jgbakke.jlearning;
 
+import java.util.Arrays;
+
 public class State {
     private int[] stateIdentifier;
 
@@ -23,5 +25,18 @@ public class State {
         State newState = new State(stateIdentifier, stateUpdater);
         newState.updateState(taken);
         return newState;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        State state = (State) o;
+        return Arrays.equals(stateIdentifier, state.stateIdentifier);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(stateIdentifier);
     }
 }

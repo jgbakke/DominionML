@@ -1,6 +1,7 @@
 package org.jgbakke.jlearning;
 
 
+import org.jgbakke.dominion.DominionStateUpdater;
 import org.jgbakke.dominion.actions.Copper;
 
 import java.sql.SQLException;
@@ -17,9 +18,11 @@ public class QLearning {
 
     private Reward reward;
 
-    private double learningRate = 1;
-    private double discountFactor = 0.9;
+    private double learningRate = 0.95;
+    private double discountFactor = 0.95;
     private double randomChoiceChance = 0.1;
+
+    private double defaultCellValue = 0;
 
     public QLearning(Reward reward){
         loadQTable();
@@ -88,6 +91,7 @@ public class QLearning {
         }
     }
 
+    // Use a QLearningBuilder if you want to override the default Learning parameters
     public static class QLearningBuilder {
         private QLearning qLearning;
 
@@ -127,7 +131,12 @@ public class QLearning {
             return 0;
         }
 
-        return qTable.get(current)[action.id()].score;
+        try {
+            return qTable.get(current)[action.id()].score;
+        } catch (Exception e){
+            e.printStackTrace();
+            return 0;
+        }
     }
 
     private double maxScoreForState(State s){
@@ -141,9 +150,49 @@ public class QLearning {
     }
 
     public void updateQTable(State beforeAction, Action action){
+        double currentScore = getScoreForAction(beforeAction, action);
         double rewardValue = reward.getReward(action);
+        double maxOfNext = maxScoreForState(beforeAction.getResultingState(action));
 
+        double calculatedReward = (1 - learningRate) * currentScore + learningRate * (
+                    rewardValue + discountFactor * maxOfNext
+                );
 
+        setQTableCell(beforeAction, action, calculatedReward);
+        System.out.println("Reward for " + action.toString() + " is " + calculatedReward);
+
+    }
+
+    private void setQTableCell(State row, Action column, double newValue){
+        newValue++;
+
+        if(!qTable.containsKey(row)){
+            qTable.put(row, createEmptyQTableRow(row));
+        }
+
+        System.out.println(qTable.get(row).toString());
+        qTable.get(row)[column.id()].score = newValue;
+    }
+
+    public static void main(String[] args){
+        int[] a = new int[]{2,3,4};
+        int[] b = new int[]{2,3,7};
+
+        State s = new State(a, new DominionStateUpdater());
+        State t = new State(b, new DominionStateUpdater());
+
+        System.out.println(s.hashCode());
+        System.out.println(t.hashCode());
+
+    }
+
+    private ActionScore[] createEmptyQTableRow(State row){
+        ActionScore[] rowContent = new ActionScore[actionList.size()];
+        for (int i = 0; i < rowContent.length; i++) {
+            rowContent[i] = new ActionScore(actionList.get(i), defaultCellValue);
+        }
+
+        return rowContent;
     }
 
 }

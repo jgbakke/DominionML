@@ -1,15 +1,12 @@
 package org.jgbakke.dominion.players;
 
-import org.jgbakke.dominion.DominionStateUpdater;
 import org.jgbakke.dominion.HandVisitor;
 import org.jgbakke.dominion.ModifierWrapper;
 import org.jgbakke.dominion.actions.*;
 import org.jgbakke.dominion.actions.Copper;
-import org.jgbakke.dominion.actions.Gold;
 import org.jgbakke.dominion.actions.Treasure;
 import org.jgbakke.dominion.actions.Estate;
 import org.jgbakke.dominion.actions.Victory;
-import org.jgbakke.jlearning.State;
 
 import java.util.*;
 

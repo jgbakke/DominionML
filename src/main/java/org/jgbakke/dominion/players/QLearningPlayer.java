@@ -92,8 +92,12 @@ public class QLearningPlayer extends Player {
 
     @Override
     public void gainNewCard(DominionCard card){
-        qLearning.updateQTable(currentState, card);
-        currentState.updateState(card);
+        // Do not reward for cards given at start of game
+        if(allCards.size() >= 10 && card.id() >= 0) {
+            qLearning.updateQTable(currentState, card);
+            currentState = currentState.getResultingState(card);
+        }
+
         super.gainNewCard(card);
     }
 }
