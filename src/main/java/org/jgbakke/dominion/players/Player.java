@@ -129,4 +129,6 @@ public abstract class Player {
     /// Return a List of the cards you are buying this turn
     public abstract List<DominionCard> buyPhase(int coins, int buys);
 
+    public abstract void cleanup();
+
 }

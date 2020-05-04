@@ -1,6 +1,10 @@
 package org.jgbakke.jlearning;
 
+import java.sql.Array;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.stream.Stream;
 
 public class State {
     private int[] stateIdentifier;
@@ -38,5 +42,14 @@ public class State {
     @Override
     public int hashCode() {
         return Arrays.hashCode(stateIdentifier);
+    }
+
+    public Array getStateAsArray(Connection c) throws SQLException {
+        Object[] intArray = new Object[stateIdentifier.length];
+        for (int i = 0; i < stateIdentifier.length; i++) {
+            intArray[i] = stateIdentifier[i];
+        }
+
+        return c.createArrayOf("integer", intArray);
     }
 }

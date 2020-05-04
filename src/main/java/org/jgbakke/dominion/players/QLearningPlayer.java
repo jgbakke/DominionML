@@ -67,6 +67,11 @@ public class QLearningPlayer extends Player {
 
     }
 
+    @Override
+    public void cleanup() {
+        qLearning.saveToDB();
+    }
+
     private boolean canBuyCard(DominionCard card, int coins){
         return game.bank.hasCardsRemaining(card.id()) && card.cost() <= coins;
     }

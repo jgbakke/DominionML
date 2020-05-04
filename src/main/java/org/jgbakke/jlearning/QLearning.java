@@ -1,6 +1,7 @@
 package org.jgbakke.jlearning;
 
 
+import javafx.geometry.Pos;
 import org.jgbakke.dominion.DominionStateUpdater;
 import org.jgbakke.dominion.actions.Copper;
 
@@ -193,6 +194,12 @@ public class QLearning {
         }
 
         return rowContent;
+    }
+
+    public void saveToDB(){
+        try(PostgresDriver pd = new PostgresDriver()) {
+            pd.saveToDB(qTable);
+        }
     }
 
 }
