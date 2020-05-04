@@ -140,6 +140,7 @@ public class QLearning {
         }
     }
 
+    // TODO: Fix the bug not finding the state in the qTable when it clearly is there
     private double maxScoreForState(State s){
         if(!qTable.containsKey(s)){
             return 0;
@@ -165,7 +166,7 @@ public class QLearning {
     }
 
     private void setQTableCell(State row, Action column, double newValue){
-        newValue++;
+        //newValue++;
 
         if(!qTable.containsKey(row)){
             qTable.put(row, createEmptyQTableRow(row));
@@ -173,18 +174,6 @@ public class QLearning {
 
         System.out.println(qTable.get(row).toString());
         qTable.get(row)[column.id()].score = newValue;
-    }
-
-    public static void main(String[] args){
-        int[] a = new int[]{2,3,4};
-        int[] b = new int[]{2,3,7};
-
-        State s = new State(a, new DominionStateUpdater());
-        State t = new State(b, new DominionStateUpdater());
-
-        System.out.println(s.hashCode());
-        System.out.println(t.hashCode());
-
     }
 
     private ActionScore[] createEmptyQTableRow(State row){

@@ -38,7 +38,7 @@ public class PostgresDriver implements Closeable {
         HashMap<State, ActionScore[]> qTable = new HashMap<>();
 
         try(Statement stmt = c.createStatement()) {
-            ResultSet rs = stmt.executeQuery("SELECT * FROM qtable;");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM qtable ORDER BY states;");
             while(rs.next()){
                 Array state = rs.getArray(1);
                 Array actionScores = rs.getArray(2);
@@ -76,7 +76,10 @@ public class PostgresDriver implements Closeable {
     public void saveToDB(HashMap<State, ActionScore[]> qTable){
         qTable.forEach((State row, ActionScore[] action) -> {
             try {
-                PreparedStatement stmt = c.prepareStatement("INSERT INTO qtable (states, action_scores) VALUES (?, ?) ");
+                PreparedStatement stmt = c.prepareStatement(
+                        "INSERT INTO qtable (states, action_scores) VALUES (?, ?) " +
+                            "ON CONFLICT (states) DO UPDATE " +
+                                "SET states=excluded.states, action_scores=excluded.action_scores;");
                 Array statesArray = row.getStateAsArray(c);
                 Array actionsArray =  ActionScore.getScoresAsArray(c, action);
 

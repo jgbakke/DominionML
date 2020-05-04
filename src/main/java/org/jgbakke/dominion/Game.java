@@ -20,8 +20,10 @@ public class Game {
     private Player[] players;
 
     public static void main(String[] args){
-        Game g = new Game(-2, 1, 20);
-        g.startGame();
+        for(int i = 0; i < 100; i++) {
+            Game g = new Game(-2, 1, 20);
+            g.startGame();
+        }
     }
 
     public Game(int id, int players, int maxRounds){
