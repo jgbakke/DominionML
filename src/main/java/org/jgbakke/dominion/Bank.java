@@ -7,7 +7,7 @@ import org.jgbakke.jlearning.ActionContainer;
 // This class will store the numbers of each card remaining that is available to buy
 public class Bank {
     private static final int MAX_ACTION_CARDS = 4;
-    private static final int MAX_TREASURE_CARDS = 7;
+    private static final int MAX_TREASURE_CARDS = 11;
     private static final int MAX_VICTORY_CARDS = 8;
 
     int[] cardsRemaining;

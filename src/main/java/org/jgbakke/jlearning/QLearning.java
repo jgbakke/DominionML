@@ -21,7 +21,7 @@ public class QLearning {
 
     private double learningRate = 0.95;
     private double discountFactor = 0.95;
-    private double randomChoiceChance = 0.1;
+    private double randomChoiceChance = 0.2;
 
     private double defaultCellValue = 0;
 
@@ -121,7 +121,6 @@ public class QLearning {
     private void loadQTable(){
         try(PostgresDriver pd = new PostgresDriver()){
             qTable = pd.loadQTable();
-            System.out.println("qTable loaded");
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -140,7 +139,11 @@ public class QLearning {
         }
     }
 
-    // TODO: Fix the bug not finding the state in the qTable when it clearly is there
+    private double averageScoreForState(State s){
+        // SARSA?
+        return 0;
+    }
+
     private double maxScoreForState(State s){
         if(!qTable.containsKey(s)){
             return 0;
@@ -157,12 +160,10 @@ public class QLearning {
         double maxOfNext = maxScoreForState(beforeAction.getResultingState(action));
 
         double calculatedReward = (1 - learningRate) * currentScore + learningRate * (
-                    rewardValue + discountFactor * maxOfNext
+                    rewardValue + discountFactor * maxOfNext - currentScore
                 );
 
         setQTableCell(beforeAction, action, calculatedReward);
-        System.out.println("Reward for " + action.toString() + " is " + calculatedReward);
-
     }
 
     private void setQTableCell(State row, Action column, double newValue){
@@ -170,7 +171,6 @@ public class QLearning {
             qTable.put(row, createEmptyQTableRow(row));
         }
 
-        System.out.println(qTable.get(row).toString());
         qTable.get(row)[column.id()].score = newValue;
     }
 

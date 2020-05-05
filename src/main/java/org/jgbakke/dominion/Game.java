@@ -40,7 +40,7 @@ public class Game {
     public static void main(String[] args){
         //initDB();
 
-        for(int i = 0; i < 160; i++) {
+        for(int i = 0; i < 1000; i++) {
             Game g = new Game(-2, 1, 20);
             g.startGame();
         }

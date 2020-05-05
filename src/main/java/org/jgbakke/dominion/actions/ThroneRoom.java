@@ -10,7 +10,7 @@ public class ThroneRoom implements DominionCard {
 
     @Override
     public int id() {
-        return 0;
+        return 4;
     }
 
     @Override

@@ -7,6 +7,7 @@ import org.jgbakke.dominion.actions.Copper;
 import org.jgbakke.dominion.actions.Treasure;
 import org.jgbakke.dominion.actions.Estate;
 import org.jgbakke.dominion.actions.Victory;
+import org.jgbakke.jlearning.Logger;
 
 import java.util.*;
 
@@ -118,7 +119,6 @@ public abstract class Player {
     }
 
     public void gainNewCard(DominionCard card){
-        // TODO: qLearning update qTable
         allCards.add(card);
         discard.add(card);
     }

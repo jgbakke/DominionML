@@ -26,7 +26,7 @@ public class Cellar implements DominionCard {
 
     @Override
     public int id() {
-        return 5;
+        return 6;
     }
 
     @Override

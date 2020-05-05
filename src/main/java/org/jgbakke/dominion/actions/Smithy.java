@@ -23,7 +23,7 @@ public class Smithy implements DominionCard {
 
     @Override
     public int id() {
-        return 2;
+        return 5;
     }
 
     @Override

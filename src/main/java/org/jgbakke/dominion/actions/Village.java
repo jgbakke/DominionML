@@ -23,7 +23,7 @@ public class Village implements DominionCard {
 
     @Override
     public int id() {
-        return 4;
+        return 7;
     }
 
     @Override
