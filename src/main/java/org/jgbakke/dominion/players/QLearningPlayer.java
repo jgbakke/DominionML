@@ -3,18 +3,22 @@ package org.jgbakke.dominion.players;
 import org.jgbakke.dominion.DominionReward;
 import org.jgbakke.dominion.DominionStateUpdater;
 import org.jgbakke.dominion.Game;
-import org.jgbakke.dominion.actions.Copper;
-import org.jgbakke.dominion.actions.DominionCard;
-import org.jgbakke.dominion.actions.Province;
+import org.jgbakke.dominion.ModifierWrapper;
+import org.jgbakke.dominion.actions.*;
 import org.jgbakke.jlearning.*;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class QLearningPlayer extends Player {
+    private static final int THRONE_ROOM_ID = new ThroneRoom().id();
+    private static final int CELLAR_ID = new Cellar().id();
     private Game game;
     private QLearning qLearning = new QLearning(new DominionReward());
 
@@ -26,13 +30,101 @@ public class QLearningPlayer extends Player {
     }
 
     @Override
-    public DominionCard chooseAction(int actionsRemaining) {
-        // TODO: More advanced implementation
-        // Current algorithm: Just pick the first action card
-        return hand.stream()
+    public DominionCard chooseAction(ModifierWrapper currentResources) {
+        hand.add(new Woodcutter());
+        List<DominionCard> playableCards = hand.stream()
                 .filter(c -> c.getCardType().equals(DominionCard.CardType.ACTION))
-                .findFirst()
+                .sorted(Comparator.comparingInt(c -> c.turnBonusResources().cards + c.turnBonusResources().actions))
+                .collect(Collectors.toList());
+
+        if(playableCards.isEmpty()){
+            return null;
+        }
+
+        List<DominionCard> actionsOnly = new LinkedList<>();
+        List<DominionCard> cardsOnly = new LinkedList<>();
+        List<DominionCard> actionsAndCard = new LinkedList<>();
+
+
+        DominionCard throneRoom = null;
+        DominionCard cellar = null;
+        int numPlayableCards = playableCards.size();
+
+        for (DominionCard card : playableCards) {
+            ModifierWrapper cardResources = card.turnBonusResources();
+
+            if(card instanceof ThroneRoom){
+                throneRoom = card;
+            } else if (card instanceof Cellar){
+                cellar = card;
+            } else if (cardResources.cards > 0 && cardResources.actions > 0){
+                actionsAndCard.add(card);
+            } else {
+                if (cardResources.actions > 0){
+                    actionsOnly.add(card);
+                } else if (cardResources.cards > 0){
+                    cardsOnly.add(card);
+                }
+            }
+        }
+
+        if(currentResources.actions == 0){
+            // Use a cellar to get another action and get rid of useless cards
+            if(cellar != null){
+                return cellar;
+            }
+
+            // Check that we have a throne room AND a card to play it on.
+            // It's not much use if we don't have a card to use it on
+            if(throneRoom != null && numPlayableCards > 1){
+                return throneRoom;
+            }
+
+            // If we are out of actions, let's play something to get us more actions
+            if(!actionsAndCard.isEmpty()){
+                return actionsAndCard.get(0);
+            }
+
+            if(!actionsOnly.isEmpty()){
+                return actionsOnly.get(0);
+            }
+
+        } else {
+            // We have actions so let's get more cards instead
+            if(!cardsOnly.isEmpty()){
+                return cardsOnly.get(0);
+            }
+
+            if(!actionsAndCard.isEmpty()){
+                return actionsAndCard.get(0);
+            }
+        }
+
+
+
+        // If we got here than either we have actions AND no +card cards
+        // or we have no actions and NO +action actions
+        // so let's see which options gets us more money
+        double expectedCoinValue = averageCoinValue(false);
+        DominionCard maxNumCards = cardsOnly.isEmpty() ? null : cardsOnly.get(0);
+
+        DominionCard maxCoinValue = playableCards.stream()
+                .max(Comparator.comparingInt(c -> c.turnBonusResources().coins))
                 .orElse(null);
+
+        // If we found an action card that gives us more money OR maxNumCards is null
+        if(maxCoinValue != null &&
+                (maxCoinValue.turnBonusResources().coins > expectedCoinValue ||
+                        maxNumCards == null)
+        ){
+            return maxCoinValue;
+        } else if (maxNumCards != null){
+            // Else draw as many as we can
+            return maxNumCards;
+        }
+
+        // If we got here than just return the first card
+        return playableCards.get(0);
 
     }
 

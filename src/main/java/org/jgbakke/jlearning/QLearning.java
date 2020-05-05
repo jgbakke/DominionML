@@ -166,8 +166,6 @@ public class QLearning {
     }
 
     private void setQTableCell(State row, Action column, double newValue){
-        //newValue++;
-
         if(!qTable.containsKey(row)){
             qTable.put(row, createEmptyQTableRow(row));
         }

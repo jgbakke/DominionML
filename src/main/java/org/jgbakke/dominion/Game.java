@@ -40,7 +40,7 @@ public class Game {
     public static void main(String[] args){
         //initDB();
 
-        for(int i = 0; i < 200; i++) {
+        for(int i = 0; i < 160; i++) {
             Game g = new Game(-2, 1, 20);
             g.startGame();
         }
@@ -121,7 +121,7 @@ public class Game {
             p.combineResources(new ModifierWrapper(-1, 0, 0, 0));
 
             // Pick a card
-            DominionCard chosenCard = p.chooseAction(p.getResources().actions);
+            DominionCard chosenCard = p.chooseAction(p.getResources());
 
             if(chosenCard == null){
                 break;

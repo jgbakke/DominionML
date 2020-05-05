@@ -124,7 +124,7 @@ public abstract class Player {
     }
 
     /// Return the card you want to play
-    public abstract DominionCard chooseAction(int actionsRemaining);
+    public abstract DominionCard chooseAction(ModifierWrapper currentResources);
 
     /// Return a List of the cards you are buying this turn
     public abstract List<DominionCard> buyPhase(int coins, int buys);

@@ -17,7 +17,7 @@ public class ThroneRoom implements DominionCard {
     public ActionResponse executeAction(Object inputWrapper) {
         ActionRequest req = (ActionRequest) inputWrapper;
         Player player = req.player;
-        DominionCard throneRoomedCard = player.chooseAction(req.resources.actions);
+        DominionCard throneRoomedCard = player.chooseAction(req.resources);
 
         if(throneRoomedCard != null) {
             for (int i = 0; i < 2; i++) {
