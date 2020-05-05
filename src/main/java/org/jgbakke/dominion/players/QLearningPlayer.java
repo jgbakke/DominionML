@@ -6,11 +6,11 @@ import org.jgbakke.dominion.Game;
 import org.jgbakke.dominion.actions.Copper;
 import org.jgbakke.dominion.actions.DominionCard;
 import org.jgbakke.dominion.actions.Province;
-import org.jgbakke.jlearning.Action;
-import org.jgbakke.jlearning.ActionContainer;
-import org.jgbakke.jlearning.QLearning;
-import org.jgbakke.jlearning.State;
+import org.jgbakke.jlearning.*;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -70,7 +70,26 @@ public class QLearningPlayer extends Player {
     @Override
     public void cleanup() {
         qLearning.saveToDB();
+        saveGameResult(name, getVictoryPoints());
     }
+
+    private void saveGameResult(String playerName, int score){
+        try(PostgresDriver pd = new PostgresDriver()){
+            Connection conn = pd.establishConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(
+                    "INSERT INTO games (player, score) VALUES (?, ?)");
+
+            preparedStatement.setString(1, playerName);
+            preparedStatement.setInt(2, score);
+
+            preparedStatement.execute();
+
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
 
     private boolean canBuyCard(DominionCard card, int coins){
         return game.bank.hasCardsRemaining(card.id()) && card.cost() <= coins;

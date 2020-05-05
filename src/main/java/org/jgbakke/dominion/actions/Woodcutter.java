@@ -10,7 +10,7 @@ public class Woodcutter implements DominionCard {
 
     @Override
     public int id() {
-        return 1;
+        return 2;
     }
 
     @Override

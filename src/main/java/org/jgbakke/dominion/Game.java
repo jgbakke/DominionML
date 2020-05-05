@@ -6,8 +6,13 @@ import org.jgbakke.dominion.actions.DominionCard;
 import org.jgbakke.dominion.players.Player;
 import org.jgbakke.dominion.players.QLearningPlayer;
 import org.jgbakke.jlearning.Logger;
+import org.jgbakke.jlearning.PostgresDriver;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
 public class Game {
@@ -19,8 +24,23 @@ public class Game {
 
     private Player[] players;
 
+    public static void initDB(){
+        try(PostgresDriver pd = new PostgresDriver()){
+            Statement stmt = pd.establishConnection().createStatement();
+
+            stmt.execute("CREATE TABLE IF NOT EXISTS games" +
+                    " (id SERIAL PRIMARY KEY, player TEXT, score INTEGER);");
+
+            stmt.close();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
     public static void main(String[] args){
-        for(int i = 0; i < 100; i++) {
+        //initDB();
+
+        for(int i = 0; i < 200; i++) {
             Game g = new Game(-2, 1, 20);
             g.startGame();
         }
@@ -140,6 +160,4 @@ public class Game {
 
         return players;
     }
-
-
 }

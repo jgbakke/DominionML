@@ -17,6 +17,8 @@ public class PostgresSetup {
             try {
                 Connection conn = postgresDriver.establishConnection();
                 Statement stmt = conn.createStatement();
+                //stmt.execute("DROP TABLE qtable;");
+                //stmt.execute("DROP TABLE logs;");
                 stmt.execute("CREATE TABLE IF NOT EXISTS qtable (states integer[] PRIMARY KEY, action_scores decimal[]);");
                 stmt.execute("CREATE TABLE IF NOT EXISTS logs (game_id integer, timestamp timestamp, severity smallint, message text)");
                 stmt.execute("SET TIMEZONE='America/Chicago'");
