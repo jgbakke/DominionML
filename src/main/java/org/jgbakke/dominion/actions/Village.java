@@ -28,7 +28,6 @@ public class Village implements DominionCard {
 
     @Override
     public ActionResponse executeAction(Object inputWrapper) {
-        Logger.log("Village executed!");
         return ActionResponse.emptyResponse();
     }
 }

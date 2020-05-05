@@ -1,5 +1,6 @@
 package org.jgbakke.dominion.players;
 
+import org.jgbakke.dominion.Game;
 import org.jgbakke.dominion.HandVisitor;
 import org.jgbakke.dominion.ModifierWrapper;
 import org.jgbakke.dominion.actions.*;
@@ -10,6 +11,7 @@ import org.jgbakke.dominion.actions.Victory;
 import org.jgbakke.jlearning.Logger;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public abstract class Player {
     private static final int HAND_SIZE = 5;
@@ -22,6 +24,15 @@ public abstract class Player {
     protected ArrayList<DominionCard> hand = new ArrayList<>();
 
     protected ArrayList<DominionCard> allCards = new ArrayList<>();
+
+    protected Logger logger;
+
+    protected Game game;
+
+    public Player(Game g){
+        this.game = g;
+        this.logger = game.logger;
+    }
 
     public void setStartingDeck(){
         for(int i = 0; i < 7; i++){
@@ -130,5 +141,11 @@ public abstract class Player {
     public abstract List<DominionCard> buyPhase(int coins, int buys);
 
     public abstract void cleanup();
+
+    public void logHand(){
+        List<String> handContents = hand.stream().map(h -> h.toString().split("actions")[1]).collect(Collectors.toList());
+        String logContent = String.join(" / ", handContents);
+        logger.log(logContent);
+    }
 
 }

@@ -140,7 +140,7 @@ public class QLearning {
     }
 
     private double averageScoreForState(State s){
-        // SARSA?
+        // TODO: SARSA?
         return 0;
     }
 

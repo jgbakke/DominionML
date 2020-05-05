@@ -19,19 +19,17 @@ import java.util.stream.Collectors;
 public class QLearningPlayer extends Player {
     private static final int THRONE_ROOM_ID = new ThroneRoom().id();
     private static final int CELLAR_ID = new Cellar().id();
-    private Game game;
     private QLearning qLearning = new QLearning(new DominionReward());
 
     protected State currentState = new State(new DominionStateUpdater());
 
     public QLearningPlayer(Game game){
-        this.game = game;
+        super(game);
         this.name = "Dominionator";
     }
 
     @Override
     public DominionCard chooseAction(ModifierWrapper currentResources) {
-        hand.add(new Woodcutter());
         List<DominionCard> playableCards = hand.stream()
                 .filter(c -> c.getCardType().equals(DominionCard.CardType.ACTION))
                 .sorted(Comparator.comparingInt(c -> c.turnBonusResources().cards + c.turnBonusResources().actions))
@@ -44,7 +42,6 @@ public class QLearningPlayer extends Player {
         List<DominionCard> actionsOnly = new LinkedList<>();
         List<DominionCard> cardsOnly = new LinkedList<>();
         List<DominionCard> actionsAndCard = new LinkedList<>();
-
 
         DominionCard throneRoom = null;
         DominionCard cellar = null;
@@ -100,7 +97,9 @@ public class QLearningPlayer extends Player {
             }
         }
 
-
+        if(throneRoom != null && numPlayableCards > 1){
+            return throneRoom;
+        }
 
         // If we got here than either we have actions AND no +card cards
         // or we have no actions and NO +action actions
@@ -132,27 +131,27 @@ public class QLearningPlayer extends Player {
     public List<DominionCard> buyPhase(int coins, int buys) {
         LinkedList<DominionCard> chosenBuys = new LinkedList<>();
 
-        while(coins > 0 && buys > 0){
+        while(coins > 1 && buys > 0){
             List<Action> validCards = validBuyChoices(coins);
 
-            DominionCard chosen;
+            DominionCard chosen = null;
 
             if(coins >= 8){
                 chosen = new Province();
             } else {
                 Action qLearningAction = qLearning.chooseAction(currentState, validCards);
 
-                if(qLearningAction == null){
-                    chosen = new Copper();
-                } else {
+                if(qLearningAction != null){
                     chosen = (DominionCard)qLearningAction;
                 }
             }
 
-            chosenBuys.add(chosen);
+            if(chosen != null) {
+                chosenBuys.add(chosen);
+                buys--;
+                coins -= chosen.cost();
+            }
 
-            buys--;
-            coins -= chosen.cost();
         }
 
         return chosenBuys;

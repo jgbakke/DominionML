@@ -24,6 +24,8 @@ public class Game {
 
     private Player[] players;
 
+    public Logger logger;
+
     public static void initDB(){
         try(PostgresDriver pd = new PostgresDriver()){
             Statement stmt = pd.establishConnection().createStatement();
@@ -40,14 +42,21 @@ public class Game {
     public static void main(String[] args){
         //initDB();
 
-        for(int i = 0; i < 1000; i++) {
-            Game g = new Game(-2, 1, 20);
-            g.startGame();
+        for(int i = 0; i < 1; i++) {
+            try {
+                Game g = new Game(i, 1, 20);
+                g.startGame();
+            } catch (Exception e){
+                new Logger(i).log("THERE WAS A CRITICAL ERROR: " + e.getMessage(), Logger.LoggingSeverity.ERROR);
+                e.printStackTrace();
+                i--;
+            }
         }
     }
 
     public Game(int id, int players, int maxRounds){
         this.id = id;
+        this.logger = new Logger(id);
         this.players = createPlayers(players);
         this.maxRounds = maxRounds;
         this.bank = new Bank();
@@ -67,8 +76,8 @@ public class Game {
         long finish = System.nanoTime();
         long elapsed = finish - start;
         double ms = elapsed / Math.pow(10, 6);
-        Logger.log(id, String.format("TOTAL VP: %d", players[0].getVictoryPoints()), Logger.LoggingSeverity.WARN);
-        Logger.log(id, String.format("GAME ENDED IN %.2f MS", ms), Logger.LoggingSeverity.WARN);
+        logger.log(String.format("TOTAL VP: %d", players[0].getVictoryPoints()), Logger.LoggingSeverity.WARN);
+        logger.log(String.format("GAME ENDED IN %.2f MS", ms), Logger.LoggingSeverity.WARN);
     }
 
     private void takeTurns(){
@@ -86,6 +95,7 @@ public class Game {
     }
 
     public void playCard(Player p, DominionCard card){
+        logger.log("Playing a " + card.toString());
         // We played it so remove it from the hand
         p.discardSpecificCard(card);
 
@@ -116,6 +126,9 @@ public class Game {
     private void takePlayerTurn(Player p){
         p.resetResources();
 
+        logger.log("STARTING PLAYER ACTION PHASE");
+        p.logHand();
+
         while(p.getResources().actions > 0){
             // They played an action so reduce it by 1
             p.combineResources(new ModifierWrapper(-1, 0, 0, 0));
@@ -131,15 +144,23 @@ public class Game {
 
         }
 
+        logger.log("STARTING PLAYER BUY PHASE");
+
         // Now lay our coins on the table so everybody can see
         // "KEITH SHOW YOUR CARDS!!!"
         p.addTreasureToModifiers();
 
+        logger.log("Treasure value: " + p.getResources().coins);
+
         List<DominionCard> chosenCards = p.buyPhase(p.getResources().coins, p.getResources().buys);
         giveCardsToPlayer(chosenCards, p);
 
+        chosenCards.forEach(c -> logger.log("Bought a " + c.toString()));
+
         p.discardHand();
         p.drawHand();
+
+        logger.log("END TURN");
     }
 
     private void giveCardsToPlayer(List<DominionCard> cards, Player p){

@@ -28,7 +28,6 @@ public class Smithy implements DominionCard {
 
     @Override
     public ActionResponse executeAction(Object inputWrapper) {
-        Logger.log("Smithy executed!");
         return ActionResponse.emptyResponse();
     }
 }
