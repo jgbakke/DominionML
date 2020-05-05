@@ -19,13 +19,14 @@ import java.util.stream.Collectors;
 public class QLearningPlayer extends Player {
     private static final int THRONE_ROOM_ID = new ThroneRoom().id();
     private static final int CELLAR_ID = new Cellar().id();
-    private QLearning qLearning = new QLearning(new DominionReward());
+    private QLearning qLearning;
 
     protected State currentState = new State(new DominionStateUpdater());
 
     public QLearningPlayer(Game game){
         super(game);
         this.name = "Dominionator";
+        qLearning = new QLearning(new DominionReward(game));
     }
 
     @Override
@@ -148,9 +149,10 @@ public class QLearningPlayer extends Player {
 
             if(chosen != null) {
                 chosenBuys.add(chosen);
-                buys--;
                 coins -= chosen.cost();
             }
+
+            buys--;
 
         }
 
@@ -161,26 +163,8 @@ public class QLearningPlayer extends Player {
     @Override
     public void cleanup() {
         qLearning.saveToDB();
-        saveGameResult(name, getVictoryPoints());
+        //saveGameResult(name, getVictoryPoints());
     }
-
-    private void saveGameResult(String playerName, int score){
-        try(PostgresDriver pd = new PostgresDriver()){
-            Connection conn = pd.establishConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(
-                    "INSERT INTO games (player, score) VALUES (?, ?)");
-
-            preparedStatement.setString(1, playerName);
-            preparedStatement.setInt(2, score);
-
-            preparedStatement.execute();
-
-
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-    }
-
 
     private boolean canBuyCard(DominionCard card, int coins){
         return game.bank.hasCardsRemaining(card.id()) && card.cost() <= coins;

@@ -2,6 +2,6 @@ package org.jgbakke.dominion.actions;
 
 public class Duchy extends Victory {
     public Duchy() {
-        super(5, 3, -1);
+        super(5, 3, 9);
     }
 }

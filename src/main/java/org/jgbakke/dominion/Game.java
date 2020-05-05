@@ -22,6 +22,8 @@ public class Game {
 
     private int maxRounds;
 
+    private int round = 0;
+
     private Player[] players;
 
     public Logger logger;
@@ -42,12 +44,15 @@ public class Game {
     public static void main(String[] args){
         //initDB();
 
-        for(int i = 0; i < 1; i++) {
+        for(int i = 0; i < 1000; i++) {
             try {
-                Game g = new Game(i, 1, 20);
+                Game g = new Game(i, 1, 15);
                 g.startGame();
             } catch (Exception e){
-                new Logger(i).log("THERE WAS A CRITICAL ERROR: " + e.getMessage(), Logger.LoggingSeverity.ERROR);
+                Logger errLogger = new Logger(i);
+                errLogger.log("THERE WAS A CRITICAL ERROR: " + e.getMessage(), Logger.LoggingSeverity.ERROR);
+                errLogger.close();
+
                 e.printStackTrace();
                 i--;
             }
@@ -76,12 +81,14 @@ public class Game {
         long finish = System.nanoTime();
         long elapsed = finish - start;
         double ms = elapsed / Math.pow(10, 6);
+        players[0].saveGameResult("QLearning AI", players[0].getVictoryPoints());
         logger.log(String.format("TOTAL VP: %d", players[0].getVictoryPoints()), Logger.LoggingSeverity.WARN);
         logger.log(String.format("GAME ENDED IN %.2f MS", ms), Logger.LoggingSeverity.WARN);
+        logger.close();
     }
 
     private void takeTurns(){
-        for(int round = 0; round < maxRounds; round++){
+        for(round = 0; round < maxRounds; round++){
             for (Player player : players) {
                 takePlayerTurn(player);
             }
@@ -129,7 +136,11 @@ public class Game {
         logger.log("STARTING PLAYER ACTION PHASE");
         p.logHand();
 
-        while(p.getResources().actions > 0){
+        int cardsPlayedThisTurn = 0;
+
+        // You should never playthis many so lets check this just to avoid infinite looops
+        while(p.getResources().actions > 0 && cardsPlayedThisTurn++ < 50){
+
             // They played an action so reduce it by 1
             p.combineResources(new ModifierWrapper(-1, 0, 0, 0));
 
@@ -141,7 +152,6 @@ public class Game {
             }
 
             playCard(p, chosenCard);
-
         }
 
         logger.log("STARTING PLAYER BUY PHASE");
@@ -168,6 +178,18 @@ public class Game {
             bank.takeCard(c.id());
             p.gainNewCard(c);
         });
+    }
+
+    public int getRound() {
+        return round;
+    }
+
+    public int getMaxRounds() {
+        return maxRounds;
+    }
+
+    public int getRemainingRounds(){
+        return getMaxRounds() - getRound();
     }
 
     private Player[] createPlayers(int num){

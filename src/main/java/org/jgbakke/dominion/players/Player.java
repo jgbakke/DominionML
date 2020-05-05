@@ -9,7 +9,11 @@ import org.jgbakke.dominion.actions.Treasure;
 import org.jgbakke.dominion.actions.Estate;
 import org.jgbakke.dominion.actions.Victory;
 import org.jgbakke.jlearning.Logger;
+import org.jgbakke.jlearning.PostgresDriver;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -79,7 +83,11 @@ public abstract class Player {
             shuffleDeck();
         }
 
-        hand.add(deck.pop());
+        if(!deck.empty()) {
+            // It is possible for it to still be empty
+            // in the case where every single card is on the table
+            hand.add(deck.pop());
+        }
     }
 
     public void discardSpecificCard(DominionCard card){
@@ -107,8 +115,7 @@ public abstract class Player {
     public int getVictoryPoints(){
         return allCards.stream()
                 .filter(c -> c.getCardType().equals(DominionCard.CardType.VICTORY))
-                .map(c -> (Victory)c)
-                .mapToInt(c -> c.VICTORY_POINTS)
+                .mapToInt(c -> ((Victory)c).VICTORY_POINTS)
                 .sum();
     }
 
@@ -146,6 +153,24 @@ public abstract class Player {
         List<String> handContents = hand.stream().map(h -> h.toString().split("actions")[1]).collect(Collectors.toList());
         String logContent = String.join(" / ", handContents);
         logger.log(logContent);
+    }
+
+    public void saveGameResult(String playerName, int score){
+        try(PostgresDriver pd = new PostgresDriver()){
+            Connection conn = pd.establishConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(
+                    "INSERT INTO games (player, score) VALUES (?, ?)");
+
+            System.out.println("THE SCORE IS " + score);
+            preparedStatement.setString(1, playerName);
+            preparedStatement.setInt(2, score);
+
+            preparedStatement.execute();
+
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
 }

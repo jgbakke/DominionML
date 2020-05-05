@@ -1,10 +1,5 @@
 package org.jgbakke.jlearning;
 
-
-import javafx.geometry.Pos;
-import org.jgbakke.dominion.DominionStateUpdater;
-import org.jgbakke.dominion.actions.Copper;
-
 import java.sql.SQLException;
 import java.util.*;
 
@@ -21,9 +16,10 @@ public class QLearning {
 
     private double learningRate = 0.95;
     private double discountFactor = 0.95;
-    private double randomChoiceChance = 0.2;
+    private double randomChoiceChance = 0.1;
 
     private double defaultCellValue = 0;
+    private double negativeModifier = 5;
 
     public QLearning(Reward reward){
         loadQTable();
@@ -50,10 +46,18 @@ public class QLearning {
                 chooseRandomAction(allowedActions) :
                 chooseOptimalAction(currentState, allowedActions);
 
+        if(chosen == null){
+            return null;
+        }
+
         return createNewInstance(chosen);
     }
 
     public Action chooseRandomAction(List<Action> allowedActions){
+        if(allowedActions.isEmpty()){
+            return null;
+        }
+
         return allowedActions.get(rand.nextInt(allowedActions.size()));
     }
 
