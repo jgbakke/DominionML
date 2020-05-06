@@ -3,8 +3,8 @@ package org.jgbakke.dominion;
 import org.jgbakke.dominion.actions.ActionRequest;
 import org.jgbakke.dominion.actions.ActionResponse;
 import org.jgbakke.dominion.actions.DominionCard;
+import org.jgbakke.dominion.players.BayesianPlayer;
 import org.jgbakke.dominion.players.Player;
-import org.jgbakke.dominion.players.QLearningPlayer;
 import org.jgbakke.jlearning.Logger;
 import org.jgbakke.jlearning.PostgresDriver;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -42,9 +42,9 @@ public class Game {
     public static void main(String[] args){
         //initDB();
 
-        for(int i = 0; i < 1000; i++) {
+        for(int i = 0; i < 500; i++) {
             try {
-                Game g = new Game(i, 1, 15);
+                Game g = new Game(i, 1, 20);
                 g.startGame();
             } catch (Exception e){
                 Logger errLogger = new Logger(i);
@@ -79,7 +79,7 @@ public class Game {
         long finish = System.nanoTime();
         long elapsed = finish - start;
         double ms = elapsed / Math.pow(10, 6);
-        players[0].saveGameResult("QLearning AI", players[0].getVictoryPoints());
+        players[0].saveGameResult("AI", players[0].getVictoryPoints());
         logger.log(String.format("TOTAL VP: %d", players[0].getVictoryPoints()), Logger.LoggingSeverity.WARN);
         logger.log(String.format("GAME ENDED IN %.2f MS", ms), Logger.LoggingSeverity.WARN);
         logger.close();
@@ -197,7 +197,7 @@ public class Game {
         players = new Player[num];
 
         if(num == 1){
-            players[0] = new QLearningPlayer(this);
+            players[0] = new BayesianPlayer(this, true);
         } else {
             throw new NotImplementedException();
         }

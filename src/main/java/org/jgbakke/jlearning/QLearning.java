@@ -143,11 +143,6 @@ public class QLearning {
         }
     }
 
-    private double averageScoreForState(State s){
-        // TODO: SARSA?
-        return 0;
-    }
-
     private double maxScoreForState(State s){
         if(!qTable.containsKey(s)){
             return 0;

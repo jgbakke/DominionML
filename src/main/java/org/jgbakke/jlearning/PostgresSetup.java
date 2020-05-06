@@ -20,6 +20,7 @@ public class PostgresSetup {
                 //stmt.execute("DROP TABLE qtable;");
                 //stmt.execute("DROP TABLE logs;");
                 stmt.execute("CREATE TABLE IF NOT EXISTS qtable (states integer[] PRIMARY KEY, action_scores decimal[]);");
+                stmt.execute("CREATE TABLE IF NOT EXISTS bayes_table (id integer PRIMARY KEY, score decimal);");
                 stmt.execute("CREATE TABLE IF NOT EXISTS logs (game_id integer, timestamp timestamp, severity smallint, message text)");
                 stmt.execute("SET TIMEZONE='America/Chicago'");
                 stmt.close();
