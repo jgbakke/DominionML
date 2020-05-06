@@ -20,6 +20,10 @@ public class State {
         this(new int[ActionContainer.getInstance().getActionsCount()], updater);
     }
 
+    public void undoStateUpdate(Action taken){
+        stateUpdater.undoStateUpdate(taken, stateIdentifier);
+    }
+
     public void updateState(Action taken){
         stateUpdater.updateState(taken, stateIdentifier);
     }

@@ -222,4 +222,13 @@ public class QLearningPlayer extends Player {
 
         super.gainNewCard(card);
     }
+
+    @Override
+    protected void trashCard(DominionCard card){
+        if(card.id() >= 0) {
+            currentState.undoStateUpdate(card);
+        }
+
+        super.trashCard(card);
+    }
 }

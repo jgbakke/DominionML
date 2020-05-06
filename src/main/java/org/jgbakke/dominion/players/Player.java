@@ -83,8 +83,8 @@ public abstract class Player {
     }
 
     public void trashCardFromHand(DominionCard card){
-        allCards.remove(card);
         hand.remove(card);
+        trashCard(card);
     }
 
     public void putCardDirectlyInHand(DominionCard card){
@@ -103,6 +103,11 @@ public abstract class Player {
             // in the case where every single card is on the table
             hand.add(deck.pop());
         }
+    }
+
+    protected void trashCard(DominionCard card){
+        allCards.remove(card);
+        logger.log("Trashed a " + card);
     }
 
     public void discardSpecificCard(DominionCard card){

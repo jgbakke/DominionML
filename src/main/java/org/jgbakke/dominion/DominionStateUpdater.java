@@ -13,4 +13,11 @@ public class DominionStateUpdater implements StateUpdater {
             stateIdentifier[taken.id()]++;
         }
     }
+
+    @Override
+    public void undoStateUpdate(Action taken, int[] stateIdentifier) {
+        if(taken.id() >= 0 && !((DominionCard)taken).getCardType().equals(DominionCard.CardType.VICTORY)) {
+            stateIdentifier[taken.id()]--;
+        }
+    }
 }
