@@ -14,11 +14,11 @@ public class BayesianPlayer extends Player {
 
     private boolean trainingMode = false;
 
-    private int[] optimalActionsOrdering;
+    private ActionScore[] actionScores;
 
     public BayesianPlayer(Game g) {
         super(g);
-        this.optimalActionsOrdering = generateOptimalActionsOrdering();
+        this.actionScores = generateActionScores();
     }
 
     public BayesianPlayer(Game g, boolean trainingMode){
@@ -27,17 +27,20 @@ public class BayesianPlayer extends Player {
     }
 
     // Returns the optimal actions ordered by their Bayes score
-    private int[] generateOptimalActionsOrdering(){
+    private ActionScore[] generateActionScores(){
         try(PostgresDriver pd = new PostgresDriver()){
             Connection c = pd.establishConnection();
             Statement s = c.createStatement();
-            ResultSet rs = s.executeQuery("SELECT id from bayes_table order by score desc;");
+            ResultSet rs = s.executeQuery("SELECT id, score from bayes_table order by id;");
 
-            int[] actionsOrdering = new int[actionContainer.getActionsCount()];
+            ActionScore[] actionsOrdering = new ActionScore[actionContainer.getActionsCount()];
             int index = 0;
 
             while(rs.next()){
-                actionsOrdering[index++] = rs.getInt(1);
+                int actionID = rs.getInt(1);
+                double actionScore = rs.getDouble(2);
+
+                actionsOrdering[index++] = new ActionScore(actionID, actionScore);
             }
 
             return actionsOrdering;
@@ -50,18 +53,42 @@ public class BayesianPlayer extends Player {
     }
 
     public Action chooseOptimalAction(List<Action> allowedActions){
-        // This is O(N^2) but given that the maximum size of N = 13, this should perform better than the O(N) solution
-        // because O(N) requires instantiation of a hashmap so that will likely outweigh the benefit from O(N)
-
-        for (int actionId : optimalActionsOrdering) {
-            Action act = actionContainer.getAction(actionId);
-            if(allowedActions.contains(act)){
-                return act;
-            }
+        if(allowedActions.isEmpty()){
+            return null;
         }
 
+        // This is O(N^2) but given that the maximum size of N = 12, this should perform better than the O(N) solution
+        // because O(N) requires instantiation of a hashmap so that will likely outweigh the benefit from O(N)
 
+        double[] weights = new double[actionScores.length];
+        double weightsSum = 0;
+
+        for (Action action : allowedActions) {
+            double thisWeight = actionScores[action.id()].score;
+            weights[action.id()] = thisWeight;
+            weightsSum += thisWeight;
+        }
+
+        double randomVal = Math.random() * weightsSum;
+
+        for (int i = 0; i < weights.length; i++) {
+            if(randomVal < weights[i]){
+                return QLearning.createNewInstance(actionContainer.getAction(i));
+            }
+
+            randomVal -= weights[i];
+        }
+
+        // You should not get here
         return null;
+
+
+//        for (int actionId : optimalActionsOrdering) {
+//            Action act = actionContainer.getAction(actionId);
+//            if(allowedActions.contains(act)){
+//                return act;
+//            }
+//        }
     }
 
     public Action chooseRandomAction(List<Action> allowedActions){

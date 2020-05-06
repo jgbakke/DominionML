@@ -31,7 +31,11 @@ public class MineVisitor implements HandVisitor {
         }
 
         LinkedList<DominionCard> retval = new LinkedList<>();
-        retval.add(treasureMin);
+
+        if(treasureMin != null) {
+            retval.add(treasureMin);
+        }
+
         return retval;
     }
 }

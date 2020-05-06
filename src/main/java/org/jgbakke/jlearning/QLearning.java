@@ -87,7 +87,7 @@ public class QLearning {
 //        })).get();
     }
 
-    private static Action createNewInstance(Action a){
+    public static Action createNewInstance(Action a){
         try {
             return a.getClass().newInstance();
         } catch (InstantiationException | IllegalAccessException e) {

@@ -42,7 +42,7 @@ public class Game {
     public static void main(String[] args){
         //initDB();
 
-        for(int i = 600; i < 1200; i++) {
+        for(int i = 2820; i < 3820; i++) {
             try {
                 Game g = new Game(i, 1, 19);
                 g.startGame();
