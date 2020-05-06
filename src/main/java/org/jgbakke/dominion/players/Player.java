@@ -29,7 +29,7 @@ public abstract class Player {
 
     protected ArrayList<DominionCard> allCards = new ArrayList<>();
 
-    protected Logger logger;
+    public Logger logger;
 
     protected Game game;
 
@@ -90,6 +90,7 @@ public abstract class Player {
     public void putCardDirectlyInHand(DominionCard card){
         // Puts the card right into their hand without shuffling or any other rule following
         hand.add(card);
+        allCards.add(card);
     }
 
     protected void addCardToHand(){

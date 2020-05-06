@@ -26,7 +26,7 @@ public class Workshop implements DominionCard {
     @Override
     public Object executeAction(Object inputWrapper) {
         ActionRequest req = (ActionRequest) inputWrapper;
-        req.player.buyPhase(4, 1);
+        req.callingGame.buyPhase(req.player, new ModifierWrapper(0, 0, 4, 1));
         return ActionResponse.emptyResponse();
     }
 }

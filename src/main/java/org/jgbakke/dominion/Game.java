@@ -159,16 +159,19 @@ public class Game {
         p.addTreasureToModifiers();
 
         logger.log("Treasure value: " + p.getResources().coins);
-
-        List<DominionCard> chosenCards = p.buyPhase(p.getResources().coins, p.getResources().buys);
-        giveCardsToPlayer(chosenCards, p);
-
-        chosenCards.forEach(c -> logger.log("Bought a " + c.toString()));
+        buyPhase(p, p.getResources());
 
         p.discardHand();
         p.drawHand();
 
         logger.log("END TURN");
+    }
+
+    public void buyPhase(Player p, ModifierWrapper resourcesAvailable){
+        List<DominionCard> chosenCards = p.buyPhase(resourcesAvailable.coins, resourcesAvailable.buys);
+        giveCardsToPlayer(chosenCards, p);
+
+        chosenCards.forEach(c -> logger.log("Bought a " + c.toString()));
     }
 
     private void giveCardsToPlayer(List<DominionCard> cards, Player p){

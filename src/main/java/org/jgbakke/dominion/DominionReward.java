@@ -22,7 +22,7 @@ public class DominionReward implements Reward {
 
             // Only reward for duchy if it happens near the end of the game
             if(card.id() == new Duchy().id()
-                    && game.getRemainingRounds() >= 3) {
+                    && game.getRemainingRounds() <= 3) {
                 return ((Victory) card).VICTORY_POINTS;
             }
         }
