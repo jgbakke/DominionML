@@ -42,9 +42,9 @@ public class Game {
     public static void main(String[] args){
         //initDB();
 
-        for(int i = 0; i < 500; i++) {
+        for(int i = 600; i < 1200; i++) {
             try {
-                Game g = new Game(i, 1, 20);
+                Game g = new Game(i, 1, 19);
                 g.startGame();
             } catch (Exception e){
                 Logger errLogger = new Logger(i);
@@ -197,7 +197,7 @@ public class Game {
         players = new Player[num];
 
         if(num == 1){
-            players[0] = new BayesianPlayer(this, true);
+            players[0] = new BayesianPlayer(this, false);
         } else {
             throw new NotImplementedException();
         }

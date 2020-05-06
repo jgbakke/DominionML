@@ -4,19 +4,21 @@ import org.jgbakke.dominion.Game;
 import org.jgbakke.dominion.actions.DominionCard;
 import org.jgbakke.jlearning.*;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.List;
 import java.util.Random;
 
 public class BayesianPlayer extends Player {
+    private ActionContainer actionContainer = ActionContainer.getInstance();
     private Random rand = new Random();
 
     private boolean trainingMode = false;
 
+    private int[] optimalActionsOrdering;
+
     public BayesianPlayer(Game g) {
         super(g);
+        this.optimalActionsOrdering = generateOptimalActionsOrdering();
     }
 
     public BayesianPlayer(Game g, boolean trainingMode){
@@ -24,8 +26,41 @@ public class BayesianPlayer extends Player {
         this.trainingMode = trainingMode;
     }
 
+    // Returns the optimal actions ordered by their Bayes score
+    private int[] generateOptimalActionsOrdering(){
+        try(PostgresDriver pd = new PostgresDriver()){
+            Connection c = pd.establishConnection();
+            Statement s = c.createStatement();
+            ResultSet rs = s.executeQuery("SELECT id from bayes_table order by score desc;");
+
+            int[] actionsOrdering = new int[actionContainer.getActionsCount()];
+            int index = 0;
+
+            while(rs.next()){
+                actionsOrdering[index++] = rs.getInt(1);
+            }
+
+            return actionsOrdering;
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return null;
+    }
+
     public Action chooseOptimalAction(List<Action> allowedActions){
-        // TODO
+        // This is O(N^2) but given that the maximum size of N = 13, this should perform better than the O(N) solution
+        // because O(N) requires instantiation of a hashmap so that will likely outweigh the benefit from O(N)
+
+        for (int actionId : optimalActionsOrdering) {
+            Action act = actionContainer.getAction(actionId);
+            if(allowedActions.contains(act)){
+                return act;
+            }
+        }
+
+
         return null;
     }
 
@@ -69,6 +104,10 @@ public class BayesianPlayer extends Player {
 
     @Override
     public void cleanup() {
+        if(!trainingMode){
+            return;
+        }
+
         try(PostgresDriver pd = new PostgresDriver()) {
             Connection c = pd.establishConnection();
             double[] scores = calculateBayesScores();

@@ -101,6 +101,11 @@ public abstract class Player {
             shuffleDeck();
         }
 
+        if(deck.empty() && discard.empty()){
+            logger.log("There are no more cards in hand or discard! Cannot add to hand! Returning...");
+            return;
+        }
+
         if(!deck.empty()) {
             // It is possible for it to still be empty
             // in the case where every single card is on the table
@@ -304,6 +309,8 @@ public abstract class Player {
                 chosen = new Province();
             } else if (coins >= 5 && game.getRemainingRounds() <= 3) {
                 chosen = new Duchy();
+            } else if((coins == 2 || coins == 3 && game.getRemainingRounds() <= 3) || game.getRemainingRounds() == 1) {
+                chosen = new Estate();
             } else {
                 Action qLearningAction = chooseBuy(currentState, validCards);
 
