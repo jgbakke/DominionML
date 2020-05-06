@@ -1,5 +1,6 @@
 package org.jgbakke.dominion.players;
 
+import org.jgbakke.dominion.DominionStateUpdater;
 import org.jgbakke.dominion.Game;
 import org.jgbakke.dominion.HandVisitor;
 import org.jgbakke.dominion.ModifierWrapper;
@@ -8,8 +9,7 @@ import org.jgbakke.dominion.actions.Copper;
 import org.jgbakke.dominion.actions.Treasure;
 import org.jgbakke.dominion.actions.Estate;
 import org.jgbakke.dominion.actions.Victory;
-import org.jgbakke.jlearning.Logger;
-import org.jgbakke.jlearning.PostgresDriver;
+import org.jgbakke.jlearning.*;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -28,6 +28,8 @@ public abstract class Player {
     protected ArrayList<DominionCard> hand = new ArrayList<>();
 
     protected ArrayList<DominionCard> allCards = new ArrayList<>();
+
+    protected State currentState = new State(new DominionStateUpdater());
 
     public Logger logger;
 
@@ -163,10 +165,163 @@ public abstract class Player {
     }
 
     /// Return the card you want to play
-    public abstract DominionCard chooseAction(ModifierWrapper currentResources);
+    public DominionCard chooseAction(ModifierWrapper currentResources) {
+        List<DominionCard> playableCards = hand.stream()
+                .filter(c -> c.getCardType().equals(DominionCard.CardType.ACTION))
+                .sorted(Comparator.comparingInt(c -> c.turnBonusResources().cards + c.turnBonusResources().actions))
+                .collect(Collectors.toList());
+
+        if(playableCards.isEmpty()){
+            return null;
+        }
+
+        List<DominionCard> actionsOnly = new LinkedList<>();
+        List<DominionCard> cardsOnly = new LinkedList<>();
+        List<DominionCard> actionsAndCard = new LinkedList<>();
+
+        DominionCard mine = null;
+        DominionCard bureaucrat = null;
+        DominionCard workshop = null;
+        DominionCard throneRoom = null;
+        DominionCard cellar = null;
+        DominionCard mineableTreasure = null;
+
+        int numPlayableCards = playableCards.size();
+
+        for (DominionCard card : playableCards) {
+            ModifierWrapper cardResources = card.turnBonusResources();
+
+            if(card instanceof ThroneRoom){
+                throneRoom = card;
+            } else if (card instanceof Cellar){
+                cellar = card;
+            } else if (card instanceof Mine){
+                mine = card;
+            } else if (card instanceof Workshop){
+                workshop = card;
+            } else if (card instanceof Bureaucrat){
+                bureaucrat = card;
+            } else if (card instanceof Copper || card instanceof Silver){
+                mineableTreasure = card;
+            } else if (cardResources.cards > 0 && cardResources.actions > 0){
+                actionsAndCard.add(card);
+            } else {
+                if (cardResources.actions > 0){
+                    actionsOnly.add(card);
+                } else if (cardResources.cards > 0){
+                    cardsOnly.add(card);
+                }
+            }
+        }
+
+        if(currentResources.actions == 0){
+            // Use a cellar to get another action and get rid of useless cards
+            if(cellar != null){
+                return cellar;
+            }
+
+            // Check that we have a throne room AND a card to play it on.
+            // It's not much use if we don't have a card to use it on
+            if(throneRoom != null && numPlayableCards > 1){
+                return throneRoom;
+            }
+
+            // If we are out of actions, let's play something to get us more actions
+            if(!actionsAndCard.isEmpty()){
+                return actionsAndCard.get(0);
+            }
+
+            if(!actionsOnly.isEmpty()){
+                return actionsOnly.get(0);
+            }
+
+        } else {
+            // We have actions so let's get more cards instead
+            if(!cardsOnly.isEmpty()){
+                return cardsOnly.get(0);
+            }
+
+            if(!actionsAndCard.isEmpty()){
+                return actionsAndCard.get(0);
+            }
+        }
+
+        if(throneRoom != null && numPlayableCards > 1){
+            return throneRoom;
+        }
+
+        if(mine != null && mineableTreasure != null){
+            return mine;
+        }
+
+        // If we got here than either we have actions AND no +card cards
+        // or we have no actions and NO +action actions
+        // so let's see which options gets us more money
+        double expectedCoinValue = averageCoinValue(false);
+        DominionCard maxNumCards = cardsOnly.isEmpty() ? null : cardsOnly.get(0);
+
+        DominionCard maxCoinValue = playableCards.stream()
+                .max(Comparator.comparingInt(c -> c.turnBonusResources().coins))
+                .orElse(null);
+
+        if(3 >= maxCoinValue.turnBonusResources().coins && 3 >= expectedCoinValue){
+            if(bureaucrat != null){
+                return bureaucrat;
+            }
+
+            if(workshop != null){
+                return workshop;
+            }
+        }
+
+        // If we found an action card that gives us more money OR maxNumCards is null
+        if(maxCoinValue != null &&
+                (maxCoinValue.turnBonusResources().coins > expectedCoinValue ||
+                        maxNumCards == null)
+        ){
+            return maxCoinValue;
+        } else if (maxNumCards != null){
+            // Else draw as many as we can
+            return maxNumCards;
+        }
+
+        // If we got here than just return the first card
+        return playableCards.get(0);
+
+    }
+
+    public abstract Action chooseBuy(State currentState, List<Action> validCards);
 
     /// Return a List of the cards you are buying this turn
-    public abstract List<DominionCard> buyPhase(int coins, int buys);
+    public List<DominionCard> buyPhase(int coins, int buys) {
+        LinkedList<DominionCard> chosenBuys = new LinkedList<>();
+
+        while(coins > 1 && buys > 0){
+            List<Action> validCards = validBuyChoices(coins);
+            DominionCard chosen = null;
+
+            if(coins >= 8){
+                chosen = new Province();
+            } else if (coins >= 5 && game.getRemainingRounds() <= 3) {
+                chosen = new Duchy();
+            } else {
+                Action qLearningAction = chooseBuy(currentState, validCards);
+
+                if(qLearningAction != null){
+                    chosen = (DominionCard)qLearningAction;
+                }
+            }
+
+            if(chosen != null) {
+                chosenBuys.add(chosen);
+                coins -= chosen.cost();
+            }
+
+            buys--;
+        }
+
+        return chosenBuys;
+    }
 
     public abstract void cleanup();
 
@@ -174,6 +329,28 @@ public abstract class Player {
         List<String> handContents = hand.stream().map(h -> h.toString().split("actions")[1]).collect(Collectors.toList());
         String logContent = String.join(" / ", handContents);
         logger.log(logContent);
+    }
+
+    private boolean canBuyCard(DominionCard card, int coins){
+        return game.bank.hasCardsRemaining(card.id()) && card.cost() <= coins;
+    }
+
+    private boolean cardIsTooCheap(DominionCard card, int coins){
+        return card.cost() < coins - 1;
+    }
+
+    protected List<Action> validBuyChoices(int coins){
+        List<Action> validChoices = new LinkedList<>();
+
+        for (Action action : ActionContainer.getInstance().getActions()) {
+            DominionCard card = (DominionCard)action;
+
+            if(canBuyCard(card, coins) && !cardIsTooCheap(card, coins)){
+                validChoices.add(card);
+            }
+        }
+
+        return validChoices;
     }
 
     public void saveGameResult(String playerName, int score){
