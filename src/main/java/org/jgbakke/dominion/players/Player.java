@@ -72,10 +72,24 @@ public abstract class Player {
         }
     }
 
+    public void addOnTopOfDeck(DominionCard card){
+        deck.push(card);
+    }
+
     protected void shuffleDeck(){
         Collections.shuffle(discard);
         deck = discard;
         discard = new Stack<>();
+    }
+
+    public void trashCardFromHand(DominionCard card){
+        allCards.remove(card);
+        hand.remove(card);
+    }
+
+    public void putCardDirectlyInHand(DominionCard card){
+        // Puts the card right into their hand without shuffling or any other rule following
+        hand.add(card);
     }
 
     protected void addCardToHand(){

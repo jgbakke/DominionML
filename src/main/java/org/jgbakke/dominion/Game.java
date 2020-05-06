@@ -9,8 +9,6 @@ import org.jgbakke.jlearning.Logger;
 import org.jgbakke.jlearning.PostgresDriver;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;

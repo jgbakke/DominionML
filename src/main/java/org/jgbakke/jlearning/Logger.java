@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class Logger implements Closeable {
-    private static final int MINIMUM_LEVEL = LoggingSeverity.WARN.ordinal();
+    private static final int MINIMUM_LEVEL = LoggingSeverity.DEBUG.ordinal();
 
     private static final String RESET_COLOR ="\033[0m";
     private static final String RED_COLOR ="\033[0;31m";

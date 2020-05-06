@@ -7,10 +7,6 @@ import org.jgbakke.dominion.ModifierWrapper;
 import org.jgbakke.dominion.actions.*;
 import org.jgbakke.jlearning.*;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -44,8 +40,13 @@ public class QLearningPlayer extends Player {
         List<DominionCard> cardsOnly = new LinkedList<>();
         List<DominionCard> actionsAndCard = new LinkedList<>();
 
+        DominionCard mine = null;
+        DominionCard bureaucrat = null;
+        DominionCard workshop = null;
         DominionCard throneRoom = null;
         DominionCard cellar = null;
+        DominionCard mineableTreasure = null;
+
         int numPlayableCards = playableCards.size();
 
         for (DominionCard card : playableCards) {
@@ -55,6 +56,14 @@ public class QLearningPlayer extends Player {
                 throneRoom = card;
             } else if (card instanceof Cellar){
                 cellar = card;
+            } else if (card instanceof Mine){
+                mine = card;
+            } else if (card instanceof Workshop){
+                workshop = card;
+            } else if (card instanceof Bureaucrat){
+                bureaucrat = card;
+            } else if (card instanceof Copper || card instanceof Silver){
+                mineableTreasure = card;
             } else if (cardResources.cards > 0 && cardResources.actions > 0){
                 actionsAndCard.add(card);
             } else {
@@ -102,6 +111,10 @@ public class QLearningPlayer extends Player {
             return throneRoom;
         }
 
+        if(mine != null && mineableTreasure != null){
+            return mine;
+        }
+
         // If we got here than either we have actions AND no +card cards
         // or we have no actions and NO +action actions
         // so let's see which options gets us more money
@@ -111,6 +124,16 @@ public class QLearningPlayer extends Player {
         DominionCard maxCoinValue = playableCards.stream()
                 .max(Comparator.comparingInt(c -> c.turnBonusResources().coins))
                 .orElse(null);
+
+        if(3 >= maxCoinValue.turnBonusResources().coins && 3 >= expectedCoinValue){
+           if(bureaucrat != null){
+               return bureaucrat;
+           }
+
+           if(workshop != null){
+               return workshop;
+           }
+        }
 
         // If we found an action card that gives us more money OR maxNumCards is null
         if(maxCoinValue != null &&

@@ -2,17 +2,15 @@ package org.jgbakke.dominion.actions;
 
 import org.jgbakke.dominion.ModifierWrapper;
 
-public class Village implements DominionCard {
-    private static final ModifierWrapper VILLAGE_RESOURCES = new ModifierWrapper(2, 1, 0, 0);
-
+public class Bureaucrat implements DominionCard {
     @Override
     public int cost() {
-        return 3;
+        return 4;
     }
 
     @Override
     public ModifierWrapper turnBonusResources() {
-        return VILLAGE_RESOURCES;
+        return ModifierWrapper.noModifiers();
     }
 
     @Override
@@ -22,11 +20,13 @@ public class Village implements DominionCard {
 
     @Override
     public int id() {
-        return 7;
+        return 9;
     }
 
     @Override
-    public ActionResponse executeAction(Object inputWrapper) {
+    public Object executeAction(Object inputWrapper) {
+        ActionRequest req = (ActionRequest) inputWrapper;
+        req.player.addOnTopOfDeck(new Silver());
         return ActionResponse.emptyResponse();
     }
 }
