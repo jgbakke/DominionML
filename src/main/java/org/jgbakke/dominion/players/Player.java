@@ -89,6 +89,7 @@ public abstract class Player {
 
     public void putCardDirectlyInHand(DominionCard card){
         // Puts the card right into their hand without shuffling or any other rule following
+        logger.log("Putting directly into hand a " + card.toString());
         hand.add(card);
         allCards.add(card);
     }
