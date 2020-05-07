@@ -1,6 +1,9 @@
 package org.jgbakke.dominion.controllers;
 
 import org.jgbakke.dominion.Game;
+import org.jgbakke.dominion.actions.Estate;
+import org.jgbakke.dominion.actions.ThroneRoom;
+import org.jgbakke.jlearning.Action;
 
 import java.util.HashMap;
 

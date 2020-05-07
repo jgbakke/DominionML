@@ -9,6 +9,7 @@ import org.jgbakke.dominion.actions.Copper;
 import org.jgbakke.dominion.actions.Treasure;
 import org.jgbakke.dominion.actions.Estate;
 import org.jgbakke.dominion.actions.Victory;
+import org.jgbakke.dominion.controllers.DominionController;
 import org.jgbakke.jlearning.*;
 
 import java.sql.Connection;
@@ -28,6 +29,8 @@ public abstract class Player {
     protected ArrayList<DominionCard> hand = new ArrayList<>();
 
     protected ArrayList<DominionCard> allCards = new ArrayList<>();
+
+    protected ArrayList<DominionCard> cardsDiscardedThisTurn = new ArrayList<>();
 
     protected State currentState = new State(new DominionStateUpdater());
 
@@ -118,9 +121,26 @@ public abstract class Player {
         logger.log("Trashed a " + card);
     }
 
+    public void prepareToDiscardCard(DominionCard card){
+        hand.remove(card);
+
+        if(!cardsDiscardedThisTurn.contains(card)){
+            cardsDiscardedThisTurn.add(card);
+        }
+    }
+
     public void discardSpecificCard(DominionCard card){
         hand.remove(card);
-        discard.add(card);
+
+        // To avoid duplicating
+        if(!discard.contains(card)) {
+            discard.add(card);
+        }
+    }
+
+    public void discardPlayedCards(){
+        discard.addAll(cardsDiscardedThisTurn);
+        cardsDiscardedThisTurn.clear();
     }
 
     public void discardHand(){
