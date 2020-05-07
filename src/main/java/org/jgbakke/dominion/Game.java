@@ -11,6 +11,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Game {
@@ -42,7 +43,7 @@ public class Game {
     public static void main(String[] args){
         //initDB();
 
-        for(int i = 2820; i < 3820; i++) {
+        for(int i = 1500; i < 3000; i++) {
             try {
                 Game g = new Game(i, 1, 19);
                 g.startGame();
@@ -57,6 +58,10 @@ public class Game {
         }
     }
 
+    public int getVictoryPoints(int playerId){
+        return players[playerId].getVictoryPoints();
+    }
+
     public Game(int id, int players, int maxRounds){
         this.id = id;
         this.logger = new Logger(id);
@@ -65,13 +70,17 @@ public class Game {
         this.bank = new Bank();
     }
 
-    public void startGame(){
-        long start = System.nanoTime();
-
+    public void initPlayers(){
         for (Player player : players) {
             player.setStartingDeck();
             player.drawHand();
         }
+    }
+
+    public void startGame(){
+        long start = System.nanoTime();
+
+        initPlayers();
 
         takeTurns();
         cleanup();
@@ -128,7 +137,11 @@ public class Game {
         p.getResources().resetCards();
     }
 
-    private void takePlayerTurn(Player p){
+    public String takeAiPlayerTurn(){
+        return takePlayerTurn(players[0]);
+    }
+
+    private String takePlayerTurn(Player p){
         p.resetResources();
 
         logger.log("STARTING PLAYER ACTION PHASE");
@@ -136,7 +149,7 @@ public class Game {
 
         int cardsPlayedThisTurn = 0;
 
-        // You should never playthis many so lets check this just to avoid infinite looops
+        // You should never play this many so lets check this just to avoid infinite looops
         while(p.getResources().actions > 0 && cardsPlayedThisTurn++ < 50){
 
             // They played an action so reduce it by 1
@@ -165,6 +178,7 @@ public class Game {
         p.drawHand();
 
         logger.log("END TURN");
+        return "End turn";
     }
 
     public void buyPhase(Player p, ModifierWrapper resourcesAvailable){
