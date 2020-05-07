@@ -28,6 +28,16 @@ public class DominionController {
         return "Game started! Press the button when it is the AI's turn.";
     }
 
+    public String exhaustFromBank(String id, String card){
+        Game game = gamesPlayed.get(id);
+
+        if(game.bank.depleteCard(card.replace(" ", ""))){
+            return "Affirmative.";
+        } else {
+            return "There is no card named " + card;
+        }
+    }
+
     public String takeAITurn(String id){
         Game game = gamesPlayed.get(id);
         return game.takeAiPlayerTurn();

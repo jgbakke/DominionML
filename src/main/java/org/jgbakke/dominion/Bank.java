@@ -12,6 +12,8 @@ public class Bank {
 
     int[] cardsRemaining;
 
+    ActionContainer ac;
+
     public Bank(){
         initStartingCards();
     }
@@ -24,6 +26,21 @@ public class Bank {
         if(cardID >= 0) {
             cardsRemaining[cardID]--;
         }
+    }
+
+    private void depleteCard(int cardId){
+        cardsRemaining[cardId] = 0;
+    }
+
+    public boolean depleteCard(String cardName) {
+        for (Action action : ac.getActions()) {
+            if (action.getClass().getName().toLowerCase().contains(cardName.toLowerCase())){
+                depleteCard(action.id());
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private int numberOfCardsForType(DominionCard.CardType type){
@@ -43,7 +60,7 @@ public class Bank {
     }
 
     public void initStartingCards(){
-        ActionContainer ac = ActionContainer.getInstance();
+        ac = ActionContainer.getInstance();
         Action[] actions = ac.getActions();
 
         int[] startingCardsCount = new int[actions.length];
