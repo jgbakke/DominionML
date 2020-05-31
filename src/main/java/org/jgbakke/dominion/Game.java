@@ -43,7 +43,7 @@ public class Game {
     public static void main(String[] args){
         //initDB();
 
-        for(int i = 1500; i < 3000; i++) {
+        for(int i = 1000; i < 2000; i++) {
             try {
                 Game g = new Game(i, 1, 19);
                 g.startGame();
